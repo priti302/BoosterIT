@@ -32,7 +32,7 @@ const About = () => {
 
   const team = [
     {
-      name: "Divyanshu Singh",
+      name: "Divyanshu Sir",
       role: "CEO & Founder",
       initial: "DS",
       description: "Visionary leader with 10+ years in tech industry",
