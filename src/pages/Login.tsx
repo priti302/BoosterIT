@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Lock, X } from "lucide-react";
+import { Mail, Lock, X, Eye, EyeOff, Phone } from "lucide-react";
 
 const Login = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,84 +28,143 @@ const Login = () => {
 
     toast({
       title: "Login Successful!",
-      description: "Welcome back to DigiTech.",
+      description: "Welcome back to AstroTalk.",
     });
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       <Navbar />
 
-      <section className="min-h-screen flex items-center justify-center gradient-hero relative overflow-hidden pt-16">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxLTEuNzktNC00LTRsLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00em0wLTEyYzAtMi4yMS0xLjc5LTQtNC00cy00IDEuNzktNCA0IDEuNzkgNCA0IDQgNC0xLjc5IDQtNHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-10"></div>
+      <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
+        {/* Background Stars */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-2 h-2 bg-white rounded-full opacity-60 animate-pulse"></div>
+          <div className="absolute top-40 right-32 w-1 h-1 bg-white rounded-full opacity-40 animate-pulse"></div>
+          <div className="absolute bottom-32 left-40 w-1 h-1 bg-white rounded-full opacity-50 animate-pulse delay-300"></div>
+          <div className="absolute top-60 left-60 w-2 h-2 bg-yellow-200 rounded-full opacity-70 animate-pulse delay-700"></div>
+          <div className="absolute bottom-40 right-40 w-1 h-1 bg-white rounded-full opacity-30 animate-pulse delay-500"></div>
+        </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-sm mx-auto">
-            <div className="bg-white/95 backdrop-blur-lg rounded-3xl p-6 shadow-2xl animate-fade-in relative">
+          <div className="max-w-md mx-auto">
+            <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl animate-fade-in relative border border-white/20">
               {/* Close Button */}
               <Link 
                 to="/" 
-                className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-200 group"
+                className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 group backdrop-blur-sm"
               >
-                <X className="h-4 w-4 text-gray-600 group-hover:text-gray-900" />
+                <X className="h-5 w-5 text-white group-hover:text-gray-200" />
               </Link>
 
-              {/* Logo */}
-              <div className="text-center mb-6">
-                <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-lg">
-                  D
+              {/* Logo Section */}
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4 shadow-lg">
+                  <span className="drop-shadow-sm">🔮</span>
                 </div>
-                <h2 className="text-2xl font-bold text-foreground mb-1">Welcome Back</h2>
-                <p className="text-muted-foreground text-sm">Sign in to your BoosterEraIT account</p>
+                <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+                <p className="text-white/80 text-sm">Sign in to your BoosterEraIT account</p>
+              </div>
+
+              {/* Login Method Toggle */}
+              <div className="flex bg-white/10 rounded-2xl p-1 mb-6 backdrop-blur-sm">
+                <button
+                  type="button"
+                  onClick={() => setLoginMethod("email")}
+                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    loginMethod === "email" 
+                      ? "bg-white text-purple-900 shadow-lg" 
+                      : "text-white/80 hover:text-white"
+                  }`}
+                >
+                  Email
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoginMethod("phone")}
+                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    loginMethod === "phone" 
+                      ? "bg-white text-purple-900 shadow-lg" 
+                      : "text-white/80 hover:text-white"
+                  }`}
+                >
+                  Phone
+                </button>
               </div>
 
               {/* Login Form */}
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Email/Phone Input */}
                 <div>
-                  <Label htmlFor="email" className="text-foreground text-sm">Email Address</Label>
-                  <div className="relative mt-1">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Label htmlFor="login" className="text-white text-sm font-medium mb-2 block">
+                    {loginMethod === "email" ? "Email Address" : "Phone Number"}
+                  </Label>
+                  <div className="relative">
+                    {loginMethod === "email" ? (
+                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
+                    ) : (
+                      <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
+                    )}
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="john@example.com"
+                      id="login"
+                      type={loginMethod === "email" ? "email" : "tel"}
+                      placeholder={
+                        loginMethod === "email" 
+                          ? "john@example.com" 
+                          : "+91 98765 43210"
+                      }
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="pl-10 h-10 text-sm"
+                      className="pl-12 h-12 text-base bg-white/5 border-white/20 text-white placeholder-white/40 rounded-xl focus:ring-2 focus:ring-white/30 focus:border-transparent"
                       required
                     />
                   </div>
                 </div>
 
+                {/* Password Input */}
                 <div>
-                  <Label htmlFor="password" className="text-foreground text-sm">Password</Label>
-                  <div className="relative mt-1">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Label htmlFor="password" className="text-white text-sm font-medium mb-2 block">
+                    Password
+                  </Label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
                     <Input
                       id="password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pl-10 h-10 text-sm"
+                      className="pl-12 pr-12 h-12 text-base bg-white/5 border-white/20 text-white placeholder-white/40 rounded-xl focus:ring-2 focus:ring-white/30 focus:border-transparent"
                       required
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs">
+                {/* Remember Me & Forgot Password */}
+                <div className="flex items-center justify-between">
                   <label className="flex items-center">
-                    <input type="checkbox" className="mr-2 rounded" />
-                    <span className="text-muted-foreground">Remember me</span>
+                    <input 
+                      type="checkbox" 
+                      className="mr-3 rounded border-white/30 bg-white/5 text-purple-500 focus:ring-purple-500" 
+                    />
+                    <span className="text-white/80 text-sm">Remember me</span>
                   </label>
-                  <a href="#" className="text-primary hover:underline text-xs">
+                  <a href="#" className="text-yellow-300 hover:text-yellow-200 text-sm font-medium transition-colors">
                     Forgot password?
                   </a>
                 </div>
 
+                {/* Login Button */}
                 <Button
                   type="submit"
-                  className="w-full rounded-full gradient-primary text-white shadow-md hover:shadow-glow text-base py-5"
+                  className="w-full rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-base font-semibold py-6 shadow-lg hover:shadow-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 transform hover:-translate-y-0.5"
                 >
                   Sign In
                 </Button>
@@ -112,17 +173,21 @@ const Login = () => {
               {/* Divider */}
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border"></div>
+                  <div className="w-full border-t border-white/20"></div>
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="px-2 bg-white text-muted-foreground">Or continue with</span>
+                  <span className="px-3 bg-transparent text-white/60">Or continue with</span>
                 </div>
               </div>
 
               {/* Social Login */}
               <div className="space-y-3">
-                <Button variant="outline" className="w-full rounded-full py-4 text-sm" type="button">
-                  <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+                <Button 
+                  variant="outline" 
+                  className="w-full rounded-xl py-4 text-sm bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white transition-all duration-200" 
+                  type="button"
+                >
+                  <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -145,18 +210,19 @@ const Login = () => {
               </div>
 
               {/* Sign Up Link */}
-              <div className="mt-6 text-center text-xs text-muted-foreground">
+              <div className="mt-8 text-center text-white/80 text-sm">
                 Don't have an account?{" "}
-                <a href="#" className="text-primary font-semibold hover:underline">
-                  Sign up
-                </a>
+                <Link to="/signup" className="text-yellow-300 font-semibold hover:text-yellow-200 transition-colors">
+                  Create new account
+                </Link>
               </div>
             </div>
 
             {/* Footer Link */}
             <div className="text-center mt-6">
-              <Link to="/" className="text-white/80 hover:text-white transition-colors text-sm">
-                ← Back to Home
+              <Link to="/" className="text-white/60 hover:text-white transition-colors text-sm inline-flex items-center">
+                <X className="h-4 w-4 mr-1" />
+                Back to Home
               </Link>
             </div>
           </div>
