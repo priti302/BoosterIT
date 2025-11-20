@@ -28,7 +28,7 @@ const Login = () => {
 
     toast({
       title: "Login Successful!",
-      description: "Welcome back to AstroTalk.",
+      description: "Welcome back to BoosterEraIT .",
     });
   };
 
