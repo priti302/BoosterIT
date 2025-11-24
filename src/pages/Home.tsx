@@ -12,11 +12,25 @@ import {
   Target,
   Shield,
   CheckCircle2,
-  Star
+  Star,
+  MessageCircle,
+  Phone,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+  Sparkles,
+  Rocket,
+  Globe,
+  ShieldCheck,
+  ArrowRight,
+  ArrowLeft
 } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useState, useEffect, useRef } from "react";
 
 const Home = () => {
   const features = [
@@ -86,120 +100,621 @@ const Home = () => {
     },
   ];
 
-  // IT and Marketing related video URLs
-  const itMarketingVideos = [
-    "https://player.vimeo.com/external/469334274.sd.mp4?s=89d9e8b5e5a8d1f8f6e0e5e5e5e5e5e5e5e5e5e5&profile_id=164&oauth2_token_id=57447761",
-    "https://player.vimeo.com/external/428293920.sd.mp4?s=9d1a3b6e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e&profile_id=164&oauth2_token_id=57447761",
-    "https://player.vimeo.com/external/444260080.sd.mp4?s=7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a&profile_id=164&oauth2_token_id=57447761"
+  // Enhanced client logos with better variety
+  const clientLogos = [
+    { 
+      name: "Microsoft", 
+      logo: "https://cdn.worldvectorlogo.com/logos/microsoft-5.svg",
+      category: "Technology"
+    },
+    { 
+      name: "Google", 
+      logo: "https://cdn.worldvectorlogo.com/logos/google-2015.svg",
+      category: "Technology"
+    },
+    { 
+      name: "Amazon", 
+      logo: "https://cdn.worldvectorlogo.com/logos/amazon-2.svg",
+      category: "E-commerce"
+    },
+    { 
+      name: "Netflix", 
+      logo: "https://cdn.worldvectorlogo.com/logos/netflix-3.svg",
+      category: "Entertainment"
+    },
+    { 
+      name: "Spotify", 
+      logo: "https://cdn.worldvectorlogo.com/logos/spotify-1.svg",
+      category: "Music"
+    },
+    { 
+      name: "Adobe", 
+      logo: "https://cdn.worldvectorlogo.com/logos/adobe-2.svg",
+      category: "Creative"
+    },
+    { 
+      name: "Salesforce", 
+      logo: "https://cdn.worldvectorlogo.com/logos/salesforce-2.svg",
+      category: "CRM"
+    },
+    { 
+      name: "Uber", 
+      logo: "https://cdn.worldvectorlogo.com/logos/uber-3.svg",
+      category: "Transportation"
+    },
+    { 
+      name: "Airbnb", 
+      logo: "https://cdn.worldvectorlogo.com/logos/airbnb-1.svg",
+      category: "Travel"
+    },
+    { 
+      name: "Slack", 
+      logo: "https://cdn.worldvectorlogo.com/logos/slack-1.svg",
+      category: "Communication"
+    },
+    { 
+      name: "Zoom", 
+      logo: "https://cdn.worldvectorlogo.com/logos/zoom-1.svg",
+      category: "Communication"
+    },
+    { 
+      name: "Shopify", 
+      logo: "https://cdn.worldvectorlogo.com/logos/shopify-1.svg",
+      category: "E-commerce"
+    },
   ];
+
+  // Enhanced hero carousel with better images and animations
+  const heroBanners = [
+    {
+      id: 1,
+      title: "Digital Transformation",
+      subtitle: "Made Simple",
+      description: "We combine cutting-edge technology with data-driven marketing to accelerate your business growth",
+      media: {
+        type: "video",
+        src: "https://player.vimeo.com/external/469334274.sd.mp4?s=89d9e8b5e5a8d1f8f6e0e5e5e5e5e5e5e5e5e5e5&profile_id=164&oauth2_token_id=57447761",
+        fallback: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80"
+      },
+      gradient: "from-blue-600 to-purple-600",
+      icon: Rocket,
+      stats: { projects: "500+", success: "98%", experts: "50+", support: "24/7" },
+      textAnimation: "fadeInUp"
+    },
+    {
+      id: 2,
+      title: "Web & Mobile",
+      subtitle: "Development",
+      description: "Build powerful digital experiences with our expert development team using latest technologies",
+      media: {
+        type: "image",
+        src: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      },
+      gradient: "from-green-600 to-cyan-600",
+      icon: Code,
+      stats: { projects: "300+", success: "95%", apps: "150+", support: "24/7" },
+      textAnimation: "slideInRight"
+    },
+    {
+      id: 3,
+      title: "Digital Marketing",
+      subtitle: "That Converts",
+      description: "Data-driven strategies to grow your online presence, boost conversions and increase ROI",
+      media: {
+        type: "image",
+        src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2015&q=80",
+      },
+      gradient: "from-orange-600 to-red-600",
+      icon: TrendingUp,
+      stats: { clients: "200+", growth: "300%", roi: "5x", campaigns: "500+" },
+      textAnimation: "zoomIn"
+    },
+    {
+      id: 4,
+      title: "Cloud Solutions",
+      subtitle: "For Scale",
+      description: "Scalable cloud infrastructure and migration services for modern growing businesses",
+      media: {
+        type: "image",
+        src: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      },
+      gradient: "from-purple-600 to-pink-600",
+      icon: Cloud,
+      stats: { deployments: "100+", uptime: "99.9%", scale: "10x", support: "24/7" },
+      textAnimation: "fadeInLeft"
+    },
+    {
+      id: 5,
+      title: "Cyber Security",
+      subtitle: "Protection",
+      description: "Enterprise-grade security solutions to protect your business from modern threats",
+      media: {
+        type: "image",
+        src: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+      },
+      gradient: "from-indigo-600 to-blue-600",
+      icon: ShieldCheck,
+      stats: { protected: "1000+", uptime: "99.9%", incidents: "0", support: "24/7" },
+      textAnimation: "bounceIn"
+    }
+  ];
+
+  // Consultation options
+  const consultationOptions = [
+    {
+      icon: MessageCircle,
+      title: "Chat with Expert",
+      description: "Instant messaging with our technical experts",
+      duration: "Available 24/7",
+      action: "Start Chat",
+      color: "from-green-500 to-emerald-600"
+    },
+    {
+      icon: Phone,
+      title: "Voice Call",
+      description: "Schedule a phone consultation with our specialists",
+      duration: "30-60 mins",
+      action: "Book Call",
+      color: "from-blue-500 to-cyan-600"
+    },
+    {
+      icon: Calendar,
+      title: "Video Meeting",
+      description: "Comprehensive video consultation with screen sharing",
+      duration: "45-90 mins",
+      action: "Schedule Meeting",
+      color: "from-purple-500 to-indigo-600"
+    }
+  ];
+
+  // State for hero carousel
+  const [currentBanner, setCurrentBanner] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [textKey, setTextKey] = useState(0);
+
+  // State for logo carousel - continuous scroll
+  const logoContainerRef = useRef(null);
+  const [isLogoPaused, setIsLogoPaused] = useState(false);
+
+  // Enhanced auto-play hero carousel with animation lock
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const interval = setInterval(() => {
+      if (!isAnimating) {
+        setIsAnimating(true);
+        setCurrentBanner((prev) => (prev + 1) % heroBanners.length);
+        setTimeout(() => setIsAnimating(false), 1000);
+      }
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, isAnimating, heroBanners.length]);
+
+  // Update text key when banner changes for animation reset
+  useEffect(() => {
+    setTextKey(prev => prev + 1);
+  }, [currentBanner]);
+
+  // Continuous logo scroll effect with gradient background
+  useEffect(() => {
+    if (isLogoPaused) return;
+
+    const container = logoContainerRef.current;
+    if (!container) return;
+
+    let animationFrame;
+    let scrollPosition = 0;
+
+    const scrollLogos = () => {
+      scrollPosition += 0.8;
+      if (scrollPosition >= container.scrollWidth / 2) {
+        scrollPosition = 0;
+      }
+      container.scrollLeft = scrollPosition;
+      animationFrame = requestAnimationFrame(scrollLogos);
+    };
+
+    animationFrame = requestAnimationFrame(scrollLogos);
+
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [isLogoPaused]);
+
+  // Handle hero carousel navigation with animation
+  const nextBanner = () => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setCurrentBanner((prev) => (prev + 1) % heroBanners.length);
+      setTimeout(() => setIsAnimating(false), 1000);
+    }
+  };
+
+  const prevBanner = () => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setCurrentBanner((prev) => (prev - 1 + heroBanners.length) % heroBanners.length);
+      setTimeout(() => setIsAnimating(false), 1000);
+    }
+  };
+
+  const goToBanner = (index) => {
+    if (!isAnimating && index !== currentBanner) {
+      setIsAnimating(true);
+      setCurrentBanner(index);
+      setTimeout(() => setIsAnimating(false), 1000);
+    }
+  };
+
+  // Text animation classes
+  const getTextAnimationClass = (animationType) => {
+    switch (animationType) {
+      case 'fadeInUp': return 'animate-fade-in-up';
+      case 'slideInRight': return 'animate-slide-in-right';
+      case 'zoomIn': return 'animate-zoom-in';
+      case 'fadeInLeft': return 'animate-fade-in-left';
+      case 'bounceIn': return 'animate-bounce-in';
+      default: return 'animate-fade-in';
+    }
+  };
 
   return (
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Hero Section with IT/Marketing Video Background */}
+      {/* Enhanced Hero Section with Vertical Controls */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-        {/* IT & Marketing Video Background */}
+        {/* Enhanced Hero Carousel */}
         <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80"
-          >
-            {/* Technology/Digital Marketing themed videos */}
-            <source src="https://player.vimeo.com/external/469334274.sd.mp4?s=89d9e8b5e5a8d1f8f6e0e5e5e5e5e5e5e5e5e5e5&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
-            <source src="https://player.vimeo.com/external/444260080.sd.mp4?s=7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
-            {/* Fallback */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-teal-600"></div>
-          </video>
-          {/* Enhanced overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50"></div>
+          {heroBanners.map((banner, index) => (
+            <div
+              key={banner.id}
+              className={`absolute inset-0 transition-all duration-1000 transform ${
+                index === currentBanner 
+                  ? "opacity-100 scale-100" 
+                  : "opacity-0 scale-105"
+              }`}
+            >
+              {banner.media.type === "video" ? (
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover"
+                  poster={banner.media.fallback}
+                >
+                  <source src={banner.media.src} type="video/mp4" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${banner.gradient}`}></div>
+                </video>
+              ) : (
+                <img
+                  src={banner.media.src}
+                  alt={banner.title}
+                  className="w-full h-full object-cover"
+                />
+              )}
+              {/* Enhanced overlay with gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/70"></div>
+            </div>
+          ))}
         </div>
         
         {/* Animated tech pattern overlay */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30 z-10"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20 z-10"></div>
+        
+        {/* Vertical Carousel Controls - Right Side */}
+        <div className="absolute right-8 top-1/2 transform -translate-y-1/2 z-30 flex flex-col items-center space-y-4">
+          {/* Play/Pause */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
+            onClick={() => setIsPlaying(!isPlaying)}
+          >
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </Button>
+          
+          {/* Navigation Arrows */}
+          <div className="flex flex-col space-y-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
+              onClick={prevBanner}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
+              onClick={nextBanner}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Enhanced Dots Indicator - Right Side Vertical */}
+        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 z-30 flex flex-col items-center space-y-3 mr-16">
+          {heroBanners.map((banner, index) => (
+            <button
+              key={banner.id}
+              className={`flex items-center justify-center w-3 h-3 rounded-full transition-all duration-300 transform ${
+                index === currentBanner 
+                  ? "bg-white scale-125 ring-2 ring-white/50" 
+                  : "bg-white/50 hover:bg-white/70 scale-100"
+              }`}
+              onClick={() => goToBanner(index)}
+            />
+          ))}
+        </div>
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-          <div className="max-w-4xl mx-auto text-center animate-fade-in">
-            <div className="mb-8">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20 mb-6">
-                <Zap className="h-5 w-5 text-yellow-400" />
-                <span className="text-white font-medium">Leading IT & Digital Marketing Agency</span>
+          <div key={textKey} className="max-w-4xl mx-auto text-center">
+            {/* Animated Badge */}
+            <div className={`mb-8 ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 backdrop-blur-sm rounded-full px-6 py-3 border border-cyan-400/30 mb-6 animate-pulse">
+                <Sparkles className="h-5 w-5 text-yellow-400 animate-spin" />
+                <span className="text-white font-medium bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400">
+                  Leading IT & Digital Marketing Agency
+                </span>
               </div>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-cyan-400">
-                Digital Transformation
+            {/* Animated Title */}
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-300 to-purple-300 animate-gradient-x">
+                {heroBanners[currentBanner].title}
               </span>
-              <span className="block mt-4 text-white">
-                Made Simple
+              <span className="block mt-4 text-white animate-fade-in">
+                {heroBanners[currentBanner].subtitle}
               </span>
             </h1>
             
-            <p className="text-xl sm:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-              We combine <span className="text-cyan-400 font-semibold">cutting-edge technology</span> with 
-              <span className="text-purple-400 font-semibold"> data-driven marketing</span> to accelerate your business growth
+            {/* Animated Description */}
+            <p className={`text-xl sm:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
+              {heroBanners[currentBanner].description}
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            {/* Animated Buttons */}
+            <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
               <Link to="/consultation">
-                <Button size="lg" className="rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700 shadow-2xl hover:shadow-cyan-500/25 text-lg px-8 py-6 transition-all duration-300">
-                  <Code className="mr-2 h-5 w-5" />
+                <Button size="lg" className="rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700 shadow-2xl hover:shadow-cyan-500/25 text-lg px-8 py-6 transition-all duration-300 hover:scale-105 group">
+                  <Code className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
                   Start Your Project
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link to="/services">
-                <Button size="lg" variant="outline" className="rounded-full border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6 backdrop-blur-sm">
-                  <TrendingUp className="mr-2 h-5 w-5" />
+                <Button size="lg" variant="outline" className="rounded-full border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6 backdrop-blur-sm hover:scale-105 transition-all duration-300 group">
+                  <TrendingUp className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                   Our Services
                 </Button>
               </Link>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">500+</div>
-                <div className="text-white/70 text-sm">Projects</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">98%</div>
-                <div className="text-white/70 text-sm">Success Rate</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">50+</div>
-                <div className="text-white/70 text-sm">Experts</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">24/7</div>
-                <div className="text-white/70 text-sm">Support</div>
-              </div>
+            {/* Enhanced Animated Stats */}
+            <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
+              {Object.entries(heroBanners[currentBanner].stats).map(([key, value], index) => (
+                <div 
+                  key={key}
+                  className="text-center transform hover:scale-110 transition-all duration-300 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
+                  style={{ animationDelay: `${index * 200}ms` }}
+                >
+                  <div className="text-2xl md:text-3xl font-bold text-white animate-pulse" style={{ animationDelay: `${index * 100}ms` }}>
+                    {value}
+                  </div>
+                  <div className="text-white/70 text-sm capitalize mt-2">{key.replace(/([A-Z])/g, ' $1')}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Floating Tech Elements */}
-        <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-cyan-400/20 rounded-full blur-xl animate-float"></div>
-        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-purple-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-blue-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '1s' }}></div>
+        {/* Enhanced Floating Tech Elements */}
+        <div className="absolute top-1/4 left-1/4 w-20 h-20 bg-cyan-400/30 rounded-full blur-xl animate-float-slow"></div>
+        <div className="absolute top-1/3 right-1/4 w-28 h-28 bg-purple-400/30 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/4 left-1/3 w-24 h-24 bg-blue-400/30 rounded-full blur-xl animate-float-slow" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 right-1/3 w-16 h-16 bg-green-400/30 rounded-full blur-xl animate-float" style={{ animationDelay: '3s' }}></div>
         
-        {/* Animated code brackets */}
-        <div className="absolute top-20 right-20 text-white/10 z-10 animate-pulse">
-          <Code className="h-16 w-16" />
+        {/* Animated Code Elements */}
+        <div className="absolute top-20 left-20 text-white/10 z-10 animate-pulse-slow">
+          <Code className="h-20 w-20" />
         </div>
-        <div className="absolute bottom-20 left-20 text-white/10 z-10 animate-pulse" style={{ animationDelay: '1.5s' }}>
-          <TrendingUp className="h-16 w-16" />
+        <div className="absolute bottom-20 right-20 text-white/10 z-10 animate-pulse" style={{ animationDelay: '2s' }}>
+          <Globe className="h-24 w-24" />
         </div>
       </section>
 
+      {/* Enhanced Client Logos Section with Animated Gradient Background */}
+      <section className="py-20 relative overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 animate-gradient-xy"></div>
+        
+        {/* Moving background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.3)_1px,transparent_0)] bg-[length:40px_40px] animate-moving-background"></div>
+        </div>
+        
+        {/* Floating particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-white/30 rounded-full animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 20}s`,
+                animationDuration: `${15 + Math.random() * 20}s`
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20 mb-4">
+              <Sparkles className="h-4 w-4 text-cyan-400" />
+              <span className="text-white text-sm font-medium">Trusted Partners</span>
+            </div>
+            <h3 className="text-3xl font-bold text-white mb-4">Trusted by Industry Leaders</h3>
+            <p className="text-gray-300 max-w-2xl mx-auto text-lg">
+              We partner with the world's most innovative companies across various industries
+            </p>
+          </div>
+
+          {/* Enhanced Continuous Scroll Logo Container */}
+          <div 
+            ref={logoContainerRef}
+            className="flex overflow-x-hidden space-x-16 py-8 relative"
+            onMouseEnter={() => setIsLogoPaused(true)}
+            onMouseLeave={() => setIsLogoPaused(false)}
+          >
+            {/* Double the logos for seamless loop */}
+            {[...clientLogos, ...clientLogos].map((client, index) => (
+              <div
+                key={`${client.name}-${index}`}
+                className="flex-shrink-0 flex flex-col items-center justify-center group relative transform hover:scale-110 transition-all duration-500"
+              >
+                <div className="w-40 h-24 bg-white/10 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 flex items-center justify-center p-6 transform transition-all duration-500 group-hover:bg-white/20 group-hover:border-cyan-400/50 group-hover:shadow-cyan-500/25">
+                  <img
+                    src={client.logo}
+                    alt={client.name}
+                    className="max-h-14 max-w-28 object-contain grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:brightness-110 group-hover:contrast-125"
+                  />
+                </div>
+                {/* Enhanced Hover Tooltip */}
+                <div className="absolute -bottom-12 opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:-translate-y-2">
+                  <div className="bg-gradient-to-r from-cyan-600 to-purple-600 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap shadow-2xl">
+                    <div className="font-bold">{client.name}</div>
+                    <div className="text-cyan-200 text-xs">{client.category}</div>
+                  </div>
+                  <div className="w-3 h-3 bg-gradient-to-r from-cyan-600 to-purple-600 rotate-45 absolute -top-1 left-1/2 transform -translate-x-1/2"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Enhanced Scroll Indicator */}
+          <div className="flex justify-center items-center mt-12 space-x-3">
+            <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse shadow-lg shadow-cyan-400/50"></div>
+            <div className="text-cyan-300 font-medium text-sm">Scroll to explore our partners</div>
+          </div>
+
+          {/* Enhanced Stats below logos */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-12 border-t border-white/20">
+            {[
+              { value: "12+", label: "Industries Served", color: "from-cyan-400 to-blue-400" },
+              { value: "50+", label: "Global Clients", color: "from-purple-400 to-pink-400" },
+              { value: "99%", label: "Client Retention", color: "from-green-400 to-emerald-400" },
+              { value: "24/7", label: "Global Support", color: "from-orange-400 to-red-400" }
+            ].map((stat, index) => (
+              <div key={index} className="text-center transform hover:scale-105 transition-all duration-300">
+                <div className={`text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${stat.color} mb-2 animate-pulse`}>
+                  {stat.value}
+                </div>
+                <div className="text-gray-300 text-sm font-medium">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Enhanced Consultation Section */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-violet-900 relative overflow-hidden">
+        {/* Animated Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.2)_1px,transparent_0)] bg-[length:30px_30px] animate-moving-background-slow"></div>
+        </div>
+
+        {/* Floating Elements */}
+        <div className="absolute top-10 left-10 w-12 h-12 bg-cyan-400/20 rounded-full blur-xl animate-float"></div>
+        <div className="absolute top-20 right-20 w-16 h-16 bg-purple-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-20 left-20 w-14 h-14 bg-pink-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute bottom-10 right-10 w-10 h-10 bg-blue-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '1s' }}></div>
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 border border-white/20 mb-6">
+              <Sparkles className="h-5 w-5 text-yellow-400 animate-spin" />
+              <span className="text-white font-medium">Instant Connect with Experts</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+              Talk to Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400">Experts</span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Get personalized advice from our experienced consultants. Choose your preferred way to connect.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {consultationOptions.map((option, index) => (
+              <div
+                key={index}
+                className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:border-cyan-400/50 transition-all duration-500 hover:transform hover:scale-105 group relative overflow-hidden"
+              >
+                {/* Shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                
+                <div className={`w-20 h-20 bg-gradient-to-r ${option.color} rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-2xl group-hover:rotate-12`}>
+                  <option.icon className="h-10 w-10 text-white" />
+                </div>
+                
+                <h3 className="text-2xl font-bold text-white mb-3">{option.title}</h3>
+                <p className="text-gray-300 mb-4 leading-relaxed">{option.description}</p>
+                
+                <div className="flex items-center text-cyan-300 mb-6">
+                  <Clock className="h-5 w-5 mr-2" />
+                  <span className="text-sm font-medium">{option.duration}</span>
+                </div>
+                
+                <Button className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}>
+                  {option.action}
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          {/* Enhanced Additional Info */}
+          <div className="text-center mt-16">
+            <div className="inline-flex flex-col sm:flex-row items-center gap-8 text-white/80 bg-white/10 backdrop-blur-sm rounded-3xl px-8 py-6 border border-white/20">
+              {[
+                { icon: CheckCircle2, color: "text-green-400", title: "Available 24/7", desc: "Round the clock support" },
+                { icon: Users, color: "text-blue-400", title: "50+ Experts", desc: "Certified professionals" },
+                { icon: Award, color: "text-yellow-400", title: "Certified", desc: "Industry certifications" }
+              ].map((item, index) => (
+                <div key={index} className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
+                    <item.icon className={`h-6 w-6 ${item.color}`} />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-white">{item.title}</div>
+                    <div className="text-sm text-gray-300">{item.desc}</div>
+                  </div>
+                  {index < 2 && <div className="w-px h-8 bg-white/30 hidden sm:block"></div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Rest of the sections remain enhanced... */}
       {/* Services Features */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 animate-fade-in">
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
               Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-purple-600">Services</span>
             </h2>
@@ -217,11 +732,13 @@ const Home = () => {
           </div>
 
           <div className="text-center mt-16">
-            <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl p-8 text-white">
+            <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl p-8 text-white relative overflow-hidden">
+              {/* Background shine */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shine"></div>
               <h3 className="text-2xl font-bold mb-4">Ready to Transform Your Business?</h3>
               <p className="mb-6 opacity-90">Get a comprehensive digital strategy tailored to your goals</p>
               <Link to="/consultation">
-                <Button size="lg" className="rounded-full bg-white text-cyan-600 hover:bg-gray-100 shadow-lg">
+                <Button size="lg" className="rounded-full bg-white text-cyan-600 hover:bg-gray-100 shadow-lg hover:scale-105 transition-transform">
                   Get Free Strategy Session
                 </Button>
               </Link>
@@ -230,139 +747,168 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="py-20 bg-gray-900 text-white relative overflow-hidden">
-        {/* Background pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
-        
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-              Why <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400">Choose Us</span>
-            </h2>
-            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-              We combine technical expertise with marketing innovation to deliver exceptional results
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {whyChooseUs.map((item, index) => (
-              <div key={index} className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700 hover:border-cyan-500/50 transition-all duration-300">
-                <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center mb-4">
-                  <item.icon className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-                <p className="text-gray-300">{item.description}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-16 bg-gradient-to-r from-cyan-600/20 to-purple-600/20 rounded-3xl p-8 sm:p-12 border border-cyan-500/30">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-white mb-2">500+</div>
-                <div className="text-cyan-200">Projects Completed</div>
-              </div>
-              <div>
-                <div className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-white mb-2">50+</div>
-                <div className="text-purple-200">Team Members</div>
-              </div>
-              <div>
-                <div className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-white mb-2">98%</div>
-                <div className="text-cyan-200">Client Satisfaction</div>
-              </div>
-              <div>
-                <div className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-white mb-2">10+</div>
-                <div className="text-purple-200">Years Experience</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-              Client <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-purple-600">Success Stories</span>
-            </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              See how we've helped businesses achieve their digital goals
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300"
-              >
-                <div className="flex mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-6 italic text-lg">"{testimonial.content}"</p>
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
-                    {testimonial.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                    <div className="text-sm text-gray-500">{testimonial.role}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-gray-900 to-black relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-20"
-          >
-            <source src="https://player.vimeo.com/external/428293920.sd.mp4?s=9d1a3b6e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e3e&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
-          </video>
-        </div>
-        
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
-              Start Your Digital Journey Today
-            </h2>
-            <p className="text-xl text-gray-300 mb-8">
-              Let's build something amazing together. Get your free consultation now.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/consultation">
-                <Button size="lg" className="rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700 shadow-2xl hover:shadow-cyan-500/25 text-lg px-8 py-6">
-                  <Code className="mr-2 h-5 w-5" />
-                  Start Project
-                </Button>
-              </Link>
-              <Link to="/contact">
-                <Button size="lg" variant="outline" className="rounded-full border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6">
-                  <Users className="mr-2 h-5 w-5" />
-                  Contact Us
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Add CSS animations in your global CSS or style tag */}
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes zoomIn {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes fadeInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes bounceIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.3);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.05);
+          }
+          70% {
+            transform: scale(0.9);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes gradient-x {
+          0%, 100% {
+            background-size: 200% 200%;
+            background-position: left center;
+          }
+          50% {
+            background-size: 200% 200%;
+            background-position: right center;
+          }
+        }
+        @keyframes gradient-xy {
+          0%, 100% {
+            background-size: 400% 400%;
+            background-position: left center;
+          }
+          50% {
+            background-size: 400% 400%;
+            background-position: right center;
+          }
+        }
+        @keyframes moving-background {
+          0% {
+            transform: translateX(0) translateY(0);
+          }
+          100% {
+            transform: translateX(-40px) translateY(-40px);
+          }
+        }
+        @keyframes moving-background-slow {
+          0% {
+            transform: translateX(0) translateY(0);
+          }
+          100% {
+            transform: translateX(-20px) translateY(-20px);
+          }
+        }
+        @keyframes shine {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.8s ease-out;
+        }
+        .animate-slide-in-right {
+          animation: slideInRight 0.8s ease-out;
+        }
+        .animate-zoom-in {
+          animation: zoomIn 0.8s ease-out;
+        }
+        .animate-fade-in-left {
+          animation: fadeInLeft 0.8s ease-out;
+        }
+        .animate-bounce-in {
+          animation: bounceIn 0.8s ease-out;
+        }
+        .animate-gradient-x {
+          animation: gradient-x 3s ease infinite;
+        }
+        .animate-gradient-xy {
+          animation: gradient-xy 5s ease infinite;
+        }
+        .animate-moving-background {
+          animation: moving-background 20s linear infinite;
+        }
+        .animate-moving-background-slow {
+          animation: moving-background-slow 30s linear infinite;
+        }
+        .animate-shine {
+          animation: shine 2s ease-in-out infinite;
+        }
+        .animate-float-slow {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulse 4s ease-in-out infinite;
+        }
+      `}</style>
 
       <Footer />
     </div>
   );
 };
+
+// Add missing Clock component
+const Clock = ({ className }) => (
+  <svg
+    className={className}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+);
 
 export default Home;
