@@ -25,7 +25,11 @@ import {
   Globe,
   ShieldCheck,
   ArrowRight,
-  ArrowLeft
+  ArrowLeft,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
 import Navbar from "@/components/Navbar";
@@ -100,7 +104,7 @@ const Home = () => {
     },
   ];
 
-  // Enhanced client logos with better variety
+  // Enhanced client logos with better styling
   const clientLogos = [
     { 
       name: "Microsoft", 
@@ -164,7 +168,7 @@ const Home = () => {
     },
   ];
 
-  // Enhanced hero carousel with better images and animations
+  // Enhanced hero carousel with animated text layers
   const heroBanners = [
     {
       id: 1,
@@ -179,7 +183,10 @@ const Home = () => {
       gradient: "from-blue-600 to-purple-600",
       icon: Rocket,
       stats: { projects: "500+", success: "98%", experts: "50+", support: "24/7" },
-      textAnimation: "fadeInUp"
+      textAnimation: "fadeInUp",
+      titleAnimation: "slideInFromTop",
+      subtitleAnimation: "bounceIn",
+      descriptionAnimation: "fadeInUpDelay"
     },
     {
       id: 2,
@@ -193,7 +200,10 @@ const Home = () => {
       gradient: "from-green-600 to-cyan-600",
       icon: Code,
       stats: { projects: "300+", success: "95%", apps: "150+", support: "24/7" },
-      textAnimation: "slideInRight"
+      textAnimation: "slideInRight",
+      titleAnimation: "zoomIn",
+      subtitleAnimation: "slideInFromRight",
+      descriptionAnimation: "fadeInLeft"
     },
     {
       id: 3,
@@ -207,7 +217,10 @@ const Home = () => {
       gradient: "from-orange-600 to-red-600",
       icon: TrendingUp,
       stats: { clients: "200+", growth: "300%", roi: "5x", campaigns: "500+" },
-      textAnimation: "zoomIn"
+      textAnimation: "zoomIn",
+      titleAnimation: "fadeInDown",
+      subtitleAnimation: "pulse",
+      descriptionAnimation: "slideInUp"
     },
     {
       id: 4,
@@ -221,7 +234,10 @@ const Home = () => {
       gradient: "from-purple-600 to-pink-600",
       icon: Cloud,
       stats: { deployments: "100+", uptime: "99.9%", scale: "10x", support: "24/7" },
-      textAnimation: "fadeInLeft"
+      textAnimation: "fadeInLeft",
+      titleAnimation: "slideInFromLeft",
+      subtitleAnimation: "rotateIn",
+      descriptionAnimation: "fadeInRight"
     },
     {
       id: 5,
@@ -235,11 +251,14 @@ const Home = () => {
       gradient: "from-indigo-600 to-blue-600",
       icon: ShieldCheck,
       stats: { protected: "1000+", uptime: "99.9%", incidents: "0", support: "24/7" },
-      textAnimation: "bounceIn"
+      textAnimation: "bounceIn",
+      titleAnimation: "bounceInDown",
+      subtitleAnimation: "flipInX",
+      descriptionAnimation: "fadeInUp"
     }
   ];
 
-  // Consultation options
+  // Consultation options with proper routing
   const consultationOptions = [
     {
       icon: MessageCircle,
@@ -247,7 +266,8 @@ const Home = () => {
       description: "Instant messaging with our technical experts",
       duration: "Available 24/7",
       action: "Start Chat",
-      color: "from-green-500 to-emerald-600"
+      color: "from-green-500 to-emerald-600",
+      link: "/consultation/chat"
     },
     {
       icon: Phone,
@@ -255,7 +275,8 @@ const Home = () => {
       description: "Schedule a phone consultation with our specialists",
       duration: "30-60 mins",
       action: "Book Call",
-      color: "from-blue-500 to-cyan-600"
+      color: "from-blue-500 to-cyan-600",
+      link: "/consultation/call"
     },
     {
       icon: Calendar,
@@ -263,7 +284,8 @@ const Home = () => {
       description: "Comprehensive video consultation with screen sharing",
       duration: "45-90 mins",
       action: "Schedule Meeting",
-      color: "from-purple-500 to-indigo-600"
+      color: "from-purple-500 to-indigo-600",
+      link: "/consultation/meeting"
     }
   ];
 
@@ -297,7 +319,7 @@ const Home = () => {
     setTextKey(prev => prev + 1);
   }, [currentBanner]);
 
-  // Continuous logo scroll effect with gradient background
+  // Enhanced continuous logo scroll effect with better performance
   useEffect(() => {
     if (isLogoPaused) return;
 
@@ -306,14 +328,17 @@ const Home = () => {
 
     let animationFrame;
     let scrollPosition = 0;
+    const scrollSpeed = 0.8;
 
     const scrollLogos = () => {
-      scrollPosition += 0.8;
-      if (scrollPosition >= container.scrollWidth / 2) {
-        scrollPosition = 0;
+      if (container) {
+        scrollPosition += scrollSpeed;
+        if (scrollPosition >= container.scrollWidth / 2) {
+          scrollPosition = 0;
+        }
+        container.scrollLeft = scrollPosition;
+        animationFrame = requestAnimationFrame(scrollLogos);
       }
-      container.scrollLeft = scrollPosition;
-      animationFrame = requestAnimationFrame(scrollLogos);
     };
 
     animationFrame = requestAnimationFrame(scrollLogos);
@@ -350,7 +375,7 @@ const Home = () => {
     }
   };
 
-  // Text animation classes
+  // Enhanced text animation classes with more variety
   const getTextAnimationClass = (animationType) => {
     switch (animationType) {
       case 'fadeInUp': return 'animate-fade-in-up';
@@ -358,6 +383,17 @@ const Home = () => {
       case 'zoomIn': return 'animate-zoom-in';
       case 'fadeInLeft': return 'animate-fade-in-left';
       case 'bounceIn': return 'animate-bounce-in';
+      case 'fadeInDown': return 'animate-fade-in-down';
+      case 'slideInFromTop': return 'animate-slide-in-from-top';
+      case 'slideInFromLeft': return 'animate-slide-in-from-left';
+      case 'slideInFromRight': return 'animate-slide-in-from-right';
+      case 'rotateIn': return 'animate-rotate-in';
+      case 'flipInX': return 'animate-flip-in-x';
+      case 'bounceInDown': return 'animate-bounce-in-down';
+      case 'pulse': return 'animate-pulse-once';
+      case 'fadeInUpDelay': return 'animate-fade-in-up-delay';
+      case 'slideInUp': return 'animate-slide-in-up';
+      case 'fadeInRight': return 'animate-fade-in-right';
       default: return 'animate-fade-in';
     }
   };
@@ -366,7 +402,7 @@ const Home = () => {
     <div className="min-h-screen">
       <Navbar />
 
-      {/* Enhanced Hero Section with Vertical Controls */}
+      {/* Enhanced Hero Section with Animated Text Layers */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
         {/* Enhanced Hero Carousel */}
         <div className="absolute inset-0 z-0">
@@ -467,22 +503,22 @@ const Home = () => {
               </div>
             </div>
             
-            {/* Animated Title */}
-            <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-300 to-purple-300 animate-gradient-x">
+            {/* Enhanced Animated Title with separate animations */}
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight ${getTextAnimationClass(heroBanners[currentBanner].titleAnimation)}`}>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-300 to-purple-300 animate-gradient-x block">
                 {heroBanners[currentBanner].title}
               </span>
-              <span className="block mt-4 text-white animate-fade-in">
+              <span className={`block mt-4 text-white ${getTextAnimationClass(heroBanners[currentBanner].subtitleAnimation)}`}>
                 {heroBanners[currentBanner].subtitle}
               </span>
             </h1>
             
-            {/* Animated Description */}
-            <p className={`text-xl sm:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
+            {/* Enhanced Animated Description */}
+            <p className={`text-xl sm:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed ${getTextAnimationClass(heroBanners[currentBanner].descriptionAnimation)}`}>
               {heroBanners[currentBanner].description}
             </p>
             
-            {/* Animated Buttons */}
+            {/* Enhanced Animated Buttons */}
             <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
               <Link to="/consultation">
                 <Button size="lg" className="rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-700 shadow-2xl hover:shadow-cyan-500/25 text-lg px-8 py-6 transition-all duration-300 hover:scale-105 group">
@@ -504,7 +540,7 @@ const Home = () => {
               {Object.entries(heroBanners[currentBanner].stats).map(([key, value], index) => (
                 <div 
                   key={key}
-                  className="text-center transform hover:scale-110 transition-all duration-300 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20"
+                  className="text-center transform hover:scale-110 transition-all duration-300 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 animate-stats-in"
                   style={{ animationDelay: `${index * 200}ms` }}
                 >
                   <div className="text-2xl md:text-3xl font-bold text-white animate-pulse" style={{ animationDelay: `${index * 100}ms` }}>
@@ -532,7 +568,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Enhanced Client Logos Section with Animated Gradient Background */}
+      {/* Enhanced Client Logos Section with Styled Container */}
       <section className="py-20 relative overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900">
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 animate-gradient-xy"></div>
@@ -570,36 +606,43 @@ const Home = () => {
             </p>
           </div>
 
-          {/* Enhanced Continuous Scroll Logo Container */}
-          <div 
-            ref={logoContainerRef}
-            className="flex overflow-x-hidden space-x-16 py-8 relative"
-            onMouseEnter={() => setIsLogoPaused(true)}
-            onMouseLeave={() => setIsLogoPaused(false)}
-          >
-            {/* Double the logos for seamless loop */}
-            {[...clientLogos, ...clientLogos].map((client, index) => (
-              <div
-                key={`${client.name}-${index}`}
-                className="flex-shrink-0 flex flex-col items-center justify-center group relative transform hover:scale-110 transition-all duration-500"
-              >
-                <div className="w-40 h-24 bg-white/10 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 flex items-center justify-center p-6 transform transition-all duration-500 group-hover:bg-white/20 group-hover:border-cyan-400/50 group-hover:shadow-cyan-500/25">
-                  <img
-                    src={client.logo}
-                    alt={client.name}
-                    className="max-h-14 max-w-28 object-contain grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:brightness-110 group-hover:contrast-125"
-                  />
-                </div>
-                {/* Enhanced Hover Tooltip */}
-                <div className="absolute -bottom-12 opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:-translate-y-2">
-                  <div className="bg-gradient-to-r from-cyan-600 to-purple-600 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap shadow-2xl">
-                    <div className="font-bold">{client.name}</div>
-                    <div className="text-cyan-200 text-xs">{client.category}</div>
+          {/* Enhanced Logo Container with Gradient Edges */}
+          <div className="relative">
+            {/* Gradient fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-slate-900 to-transparent z-10"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-900 to-transparent z-10"></div>
+            
+            {/* Enhanced Continuous Scroll Logo Container */}
+            <div 
+              ref={logoContainerRef}
+              className="flex overflow-x-hidden space-x-16 py-8 relative"
+              onMouseEnter={() => setIsLogoPaused(true)}
+              onMouseLeave={() => setIsLogoPaused(false)}
+            >
+              {/* Double the logos for seamless loop */}
+              {[...clientLogos, ...clientLogos].map((client, index) => (
+                <div
+                  key={`${client.name}-${index}`}
+                  className="flex-shrink-0 flex flex-col items-center justify-center group relative transform hover:scale-110 transition-all duration-500 animate-logo-slide"
+                >
+                  <div className="w-40 h-24 bg-white/10 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 flex items-center justify-center p-6 transform transition-all duration-500 group-hover:bg-white/20 group-hover:border-cyan-400/50 group-hover:shadow-cyan-500/25">
+                    <img
+                      src={client.logo}
+                      alt={client.name}
+                      className="max-h-14 max-w-28 object-contain grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:brightness-110 group-hover:contrast-125"
+                    />
                   </div>
-                  <div className="w-3 h-3 bg-gradient-to-r from-cyan-600 to-purple-600 rotate-45 absolute -top-1 left-1/2 transform -translate-x-1/2"></div>
+                  {/* Enhanced Hover Tooltip */}
+                  <div className="absolute -bottom-12 opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:-translate-y-2">
+                    <div className="bg-gradient-to-r from-cyan-600 to-purple-600 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap shadow-2xl">
+                      <div className="font-bold">{client.name}</div>
+                      <div className="text-cyan-200 text-xs">{client.category}</div>
+                    </div>
+                    <div className="w-3 h-3 bg-gradient-to-r from-cyan-600 to-purple-600 rotate-45 absolute -top-1 left-1/2 transform -translate-x-1/2"></div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Enhanced Scroll Indicator */}
@@ -616,7 +659,7 @@ const Home = () => {
               { value: "99%", label: "Client Retention", color: "from-green-400 to-emerald-400" },
               { value: "24/7", label: "Global Support", color: "from-orange-400 to-red-400" }
             ].map((stat, index) => (
-              <div key={index} className="text-center transform hover:scale-105 transition-all duration-300">
+              <div key={index} className="text-center transform hover:scale-105 transition-all duration-300 animate-stats-in" style={{animationDelay: `${index * 100}ms`}}>
                 <div className={`text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${stat.color} mb-2 animate-pulse`}>
                   {stat.value}
                 </div>
@@ -627,7 +670,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Enhanced Consultation Section */}
+      {/* Enhanced Consultation Section with Proper Routing */}
       <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-violet-900 relative overflow-hidden">
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -658,7 +701,8 @@ const Home = () => {
             {consultationOptions.map((option, index) => (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:border-cyan-400/50 transition-all duration-500 hover:transform hover:scale-105 group relative overflow-hidden"
+                className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:border-cyan-400/50 transition-all duration-500 hover:transform hover:scale-105 group relative overflow-hidden animate-consultation-card"
+                style={{animationDelay: `${index * 200}ms`}}
               >
                 {/* Shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
@@ -675,10 +719,12 @@ const Home = () => {
                   <span className="text-sm font-medium">{option.duration}</span>
                 </div>
                 
-                <Button className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}>
-                  {option.action}
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
-                </Button>
+                <Link to={option.link}>
+                  <Button className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}>
+                    {option.action}
+                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                  </Button>
+                </Link>
               </div>
             ))}
           </div>
@@ -708,9 +754,7 @@ const Home = () => {
       </section>
 
       {/* Rest of the sections remain enhanced... */}
-      {/* Services Features */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        {/* Background pattern */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -733,7 +777,6 @@ const Home = () => {
 
           <div className="text-center mt-16">
             <div className="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl p-8 text-white relative overflow-hidden">
-              {/* Background shine */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shine"></div>
               <h3 className="text-2xl font-bold mb-4">Ready to Transform Your Business?</h3>
               <p className="mb-6 opacity-90">Get a comprehensive digital strategy tailored to your goals</p>
@@ -747,7 +790,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Add CSS animations in your global CSS or style tag */}
+      {/* Add enhanced CSS animations */}
       <style jsx>{`
         @keyframes fadeInUp {
           from {
@@ -755,6 +798,20 @@ const Home = () => {
             transform: translateY(30px);
           }
           to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes fadeInUpDelay {
+          0% {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          50% {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          100% {
             opacity: 1;
             transform: translateY(0);
           }
@@ -789,6 +846,16 @@ const Home = () => {
             transform: translateX(0);
           }
         }
+        @keyframes fadeInRight {
+          from {
+            opacity: 0;
+            transform: translateX(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
         @keyframes bounceIn {
           0% {
             opacity: 0;
@@ -804,6 +871,133 @@ const Home = () => {
           100% {
             opacity: 1;
             transform: scale(1);
+          }
+        }
+        @keyframes bounceInDown {
+          0% {
+            opacity: 0;
+            transform: translateY(-2000px);
+          }
+          60% {
+            opacity: 1;
+            transform: translateY(30px);
+          }
+          80% {
+            transform: translateY(-10px);
+          }
+          100% {
+            transform: translateY(0);
+          }
+        }
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes slideInFromTop {
+          from {
+            opacity: 0;
+            transform: translateY(-100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes slideInFromLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes slideInFromRight {
+          from {
+            opacity: 0;
+            transform: translateX(100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes rotateIn {
+          from {
+            opacity: 0;
+            transform: rotate(-180deg) scale(0.3);
+          }
+          to {
+            opacity: 1;
+            transform: rotate(0) scale(1);
+          }
+        }
+        @keyframes flipInX {
+          from {
+            opacity: 0;
+            transform: perspective(400px) rotateX(90deg);
+          }
+          to {
+            opacity: 1;
+            transform: perspective(400px) rotateX(0);
+          }
+        }
+        @keyframes pulse-once {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.1);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+        @keyframes stats-in {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        @keyframes logo-slide {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes consultation-card {
+          from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
           }
         }
         @keyframes gradient-x {
@@ -853,6 +1047,9 @@ const Home = () => {
         .animate-fade-in-up {
           animation: fadeInUp 0.8s ease-out;
         }
+        .animate-fade-in-up-delay {
+          animation: fadeInUpDelay 1.2s ease-out;
+        }
         .animate-slide-in-right {
           animation: slideInRight 0.8s ease-out;
         }
@@ -862,8 +1059,47 @@ const Home = () => {
         .animate-fade-in-left {
           animation: fadeInLeft 0.8s ease-out;
         }
+        .animate-fade-in-right {
+          animation: fadeInRight 0.8s ease-out;
+        }
         .animate-bounce-in {
           animation: bounceIn 0.8s ease-out;
+        }
+        .animate-bounce-in-down {
+          animation: bounceInDown 1s ease-out;
+        }
+        .animate-fade-in-down {
+          animation: fadeInDown 0.8s ease-out;
+        }
+        .animate-slide-in-from-top {
+          animation: slideInFromTop 0.8s ease-out;
+        }
+        .animate-slide-in-from-left {
+          animation: slideInFromLeft 0.8s ease-out;
+        }
+        .animate-slide-in-from-right {
+          animation: slideInFromRight 0.8s ease-out;
+        }
+        .animate-slide-in-up {
+          animation: slideInUp 0.8s ease-out;
+        }
+        .animate-rotate-in {
+          animation: rotateIn 0.8s ease-out;
+        }
+        .animate-flip-in-x {
+          animation: flipInX 1s ease-out;
+        }
+        .animate-pulse-once {
+          animation: pulse-once 0.5s ease-in-out;
+        }
+        .animate-stats-in {
+          animation: stats-in 0.6s ease-out;
+        }
+        .animate-logo-slide {
+          animation: logo-slide 0.5s ease-out;
+        }
+        .animate-consultation-card {
+          animation: consultation-card 0.6s ease-out;
         }
         .animate-gradient-x {
           animation: gradient-x 3s ease infinite;
@@ -893,7 +1129,7 @@ const Home = () => {
   );
 };
 
-// Add missing Clock component
+// Clock component
 const Clock = ({ className }) => (
   <svg
     className={className}
@@ -913,4 +1149,4 @@ const Clock = ({ className }) => (
 
 export default Home;
 
-console.log("test-change");
+console.log("Enhanced home page with animated hero carousel, styled logo section, and consultation routing");
