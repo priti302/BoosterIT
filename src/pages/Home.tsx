@@ -29,7 +29,11 @@ import {
   Mail,
   Lock,
   Eye,
-  EyeOff
+  EyeOff,
+  X,
+  Send,
+  Video,
+  User
 } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
 import Navbar from "@/components/Navbar";
@@ -258,7 +262,7 @@ const Home = () => {
     }
   ];
 
-  // Consultation options with proper routing
+  // Updated consultation options with Live Chat instead of Voice Call
   const consultationOptions = [
     {
       icon: MessageCircle,
@@ -270,13 +274,13 @@ const Home = () => {
       link: "/consultation/chat"
     },
     {
-      icon: Phone,
-      title: "Voice Call",
-      description: "Schedule a phone consultation with our specialists",
-      duration: "30-60 mins",
-      action: "Book Call",
+      icon: MessageCircle,
+      title: "Live Chat",
+      description: "Instant real-time chat with our specialists",
+      duration: "Available 24/7",
+      action: "Start Live Chat",
       color: "from-blue-500 to-cyan-600",
-      link: "/consultation/call"
+      onClick: () => setIsLiveChatOpen(true)
     },
     {
       icon: Calendar,
@@ -298,6 +302,19 @@ const Home = () => {
   // State for logo carousel - continuous scroll
   const logoContainerRef = useRef(null);
   const [isLogoPaused, setIsLogoPaused] = useState(false);
+
+  // Live Chat State (Astrotalk-like functionality)
+  const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    {
+      id: 1,
+      text: "Hello! Welcome to BoosterEraIT. I'm your virtual assistant. How can I help you today?",
+      sender: "bot",
+      timestamp: new Date(),
+    }
+  ]);
+  const [newMessage, setNewMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
   // Enhanced auto-play hero carousel with animation lock
   useEffect(() => {
@@ -372,6 +389,49 @@ const Home = () => {
       setIsAnimating(true);
       setCurrentBanner(index);
       setTimeout(() => setIsAnimating(false), 1000);
+    }
+  };
+
+  // Live Chat Functions
+  const sendMessage = () => {
+    if (!newMessage.trim()) return;
+
+    const userMessage = {
+      id: chatMessages.length + 1,
+      text: newMessage,
+      sender: "user",
+      timestamp: new Date(),
+    };
+
+    setChatMessages(prev => [...prev, userMessage]);
+    setNewMessage("");
+    setIsTyping(true);
+
+    // Simulate bot response (like Astrotalk)
+    setTimeout(() => {
+      const botResponses = [
+        "I understand your query. Let me connect you with a relevant expert.",
+        "That's a great question! Our team specializes in this area.",
+        "I'll help you get the right solution for your needs.",
+        "Our experts have extensive experience with similar requirements.",
+        "Let me provide you with more detailed information about this."
+      ];
+      
+      const botMessage = {
+        id: chatMessages.length + 2,
+        text: botResponses[Math.floor(Math.random() * botResponses.length)],
+        sender: "bot",
+        timestamp: new Date(),
+      };
+
+      setChatMessages(prev => [...prev, botMessage]);
+      setIsTyping(false);
+    }, 2000);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      sendMessage();
     }
   };
 
@@ -670,7 +730,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Enhanced Consultation Section with Proper Routing */}
+      {/* Enhanced Consultation Section with Live Chat */}
       <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-violet-900 relative overflow-hidden">
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -719,12 +779,22 @@ const Home = () => {
                   <span className="text-sm font-medium">{option.duration}</span>
                 </div>
                 
-                <Link to={option.link}>
-                  <Button className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}>
+                {option.onClick ? (
+                  <Button 
+                    onClick={option.onClick}
+                    className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}
+                  >
                     {option.action}
                     <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
                   </Button>
-                </Link>
+                ) : (
+                  <Link to={option.link}>
+                    <Button className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}>
+                      {option.action}
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                    </Button>
+                  </Link>
+                )}
               </div>
             ))}
           </div>
@@ -753,7 +823,108 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Rest of the sections remain enhanced... */}
+      {/* Astrotalk-like Live Chat Widget */}
+      {isLiveChatOpen && (
+        <div className="fixed bottom-4 right-4 z-50 animate-fade-in-up">
+          <div className="bg-white rounded-2xl shadow-2xl w-80 h-96 flex flex-col border border-gray-200">
+            {/* Chat Header */}
+            <div className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white p-4 rounded-t-2xl flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <User className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm">Live Chat Support</h3>
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs opacity-90">Online now</span>
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsLiveChatOpen(false)}
+                className="text-white/80 hover:text-white transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+              <div className="space-y-3">
+                {chatMessages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+                        message.sender === 'user'
+                          ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-br-none'
+                          : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
+                      }`}
+                    >
+                      <p className="text-sm">{message.text}</p>
+                      <p className="text-xs opacity-70 mt-1 text-right">
+                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-white border border-gray-200 text-gray-800 px-4 py-2 rounded-2xl rounded-bl-none shadow-sm">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Chat Input */}
+            <div className="p-4 border-t border-gray-200">
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type your message..."
+                  className="flex-1 border border-gray-300 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                />
+                <Button
+                  onClick={sendMessage}
+                  disabled={!newMessage.trim()}
+                  className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-2xl px-4 hover:from-blue-600 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-gray-500 text-center mt-2">
+                Our experts typically reply within 2 minutes
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Live Chat Button */}
+      {!isLiveChatOpen && (
+        <Button
+          onClick={() => setIsLiveChatOpen(true)}
+          className="fixed bottom-4 right-4 z-40 bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-full p-4 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 animate-bounce"
+          size="lg"
+        >
+          <MessageCircle className="h-6 w-6 mr-2" />
+          Live Chat
+        </Button>
+      )}
+
+      {/* Rest of the sections... */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
         
@@ -1148,5 +1319,3 @@ const Clock = ({ className }) => (
 );
 
 export default Home;
-
-console.log("Enhanced home page with animated hero carousel, styled logo section, and consultation routing");

@@ -41,33 +41,33 @@ const ConsultationPage = () => {
       experts: [
         {
           id: 1,
-          name: "Alex Johnson",
-          role: "Senior Web Developer",
+          name: "Divyanshu Kushwaha",
+          role: "Marketing Expert ",
           experience: "8+ years",
           rating: 4.9,
           reviews: 127,
-          specialties: ["React", "Node.js", "AWS"],
+          specialties: ["SEO", "Google Ads", "Graphic Design"],
           available: true
         },
         {
-          id: 2,
-          name: "Sarah Chen",
-          role: "Digital Marketing Specialist",
-          experience: "6+ years",
-          rating: 4.8,
-          reviews: 89,
-          specialties: ["SEO", "PPC", "Social Media"],
-          available: true
-        },
-        {
-          id: 3,
-          name: "Mike Rodriguez",
-          role: "Cloud Architect",
-          experience: "10+ years",
+          id: 1,
+          name: "Divyanshu Kushwaha",
+          role: "Marketing Expert ",
+          experience: "8+ years",
           rating: 4.9,
-          reviews: 156,
-          specialties: ["AWS", "Azure", "DevOps"],
-          available: false
+          reviews: 127,
+          specialties: ["SEO", "Google Ads", "Graphic Design"],
+          available: true
+        },
+        {
+         id: 1,
+          name: "Divyanshu Kushwaha",
+          role: "Marketing Expert ",
+          experience: "8+ years",
+          rating: 4.9,
+          reviews: 127,
+          specialties: ["SEO", "Google Ads", "Graphic Design"],
+          available: true
         }
       ]
     },
@@ -152,7 +152,8 @@ const ConsultationPage = () => {
                         {expert.available ? "Available" : "Busy"}
                       </div>
                     </div>
-                    
+                   
+        
                     <div className="flex items-center mb-4">
                       <div className="flex text-yellow-400 mr-2">
                         {[...Array(5)].map((_, i) => (
