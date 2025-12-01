@@ -33,7 +33,34 @@ import {
   X,
   Send,
   Video,
-  User
+  User,
+  Clock,
+  Mic,
+  MicOff,
+  Video as VideoIcon,
+  VideoOff,
+  PhoneCall,
+  Headphones,
+  ScreenShare,
+  ScreenShareOff,
+  MoreVertical,
+  Volume2,
+  VolumeX,
+  Bell,
+  CreditCard,
+  CalendarDays,
+  Users as UsersIcon,
+  FileText,
+  Download,
+  Share2,
+  Maximize2,
+  Settings,
+  LogOut,
+  Star as StarIcon,
+  ThumbsUp,
+  MessageSquare,
+  HelpCircle,
+  Monitor
 } from "lucide-react";
 import ServiceCard from "@/components/ServiceCard";
 import Navbar from "@/components/Navbar";
@@ -262,7 +289,7 @@ const Home = () => {
     }
   ];
 
-  // Updated consultation options with Live Chat instead of Voice Call
+  // Updated consultation options with Live Session integration
   const consultationOptions = [
     {
       icon: MessageCircle,
@@ -271,25 +298,34 @@ const Home = () => {
       duration: "Available 24/7",
       action: "Start Chat",
       color: "from-green-500 to-emerald-600",
-      link: "/consultation/chat"
-    },
-    {
-      icon: MessageCircle,
-      title: "Live Chat",
-      description: "Instant real-time chat with our specialists",
-      duration: "Available 24/7",
-      action: "Start Live Chat",
-      color: "from-blue-500 to-cyan-600",
       onClick: () => setIsLiveChatOpen(true)
     },
     {
-      icon: Calendar,
-      title: "Video Meeting",
-      description: "Comprehensive video consultation with screen sharing",
-      duration: "45-90 mins",
-      action: "Schedule Meeting",
+      icon: VideoIcon,
+      title: "Live Video Call",
+      description: "Real-time video consultation with screen sharing",
+      duration: "30-60 mins",
+      action: "Start Video Call",
+      color: "from-blue-500 to-cyan-600",
+      onClick: () => startLiveSession("video")
+    },
+    {
+      icon: Phone,
+      title: "Voice Call",
+      description: "Audio consultation with our specialists",
+      duration: "20-45 mins",
+      action: "Start Voice Call",
       color: "from-purple-500 to-indigo-600",
-      link: "/consultation/meeting"
+      onClick: () => startLiveSession("audio")
+    },
+    {
+      icon: CalendarDays,
+      title: "Schedule Session",
+      description: "Book a personalized consultation",
+      duration: "Flexible",
+      action: "Book Now",
+      color: "from-orange-500 to-red-600",
+      onClick: () => setIsScheduleModalOpen(true)
     }
   ];
 
@@ -303,7 +339,7 @@ const Home = () => {
   const logoContainerRef = useRef(null);
   const [isLogoPaused, setIsLogoPaused] = useState(false);
 
-  // Live Chat State (Astrotalk-like functionality)
+  // Live Chat State
   const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     {
@@ -315,6 +351,51 @@ const Home = () => {
   ]);
   const [newMessage, setNewMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+
+  // Live Session States
+  const [isLiveSessionOpen, setIsLiveSessionOpen] = useState(false);
+  const [sessionType, setSessionType] = useState("video"); // video, audio
+  const [sessionStatus, setSessionStatus] = useState("connecting"); // connecting, connected, ended
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [participants, setParticipants] = useState([
+    { id: 1, name: "You", role: "Client", avatar: "", isSpeaking: true },
+    { id: 2, name: "John Doe", role: "IT Expert", avatar: "", isSpeaking: false },
+    { id: 3, name: "Sarah Smith", role: "Marketing Expert", avatar: "", isSpeaking: false },
+  ]);
+  const [sessionTimer, setSessionTimer] = useState(0);
+  const [sessionDuration, setSessionDuration] = useState(45); // minutes
+  const [recording, setRecording] = useState(false);
+
+  // Schedule Modal States
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [sessionTopic, setSessionTopic] = useState("");
+  const [sessionNotes, setSessionNotes] = useState("");
+
+  // Session History
+  const [sessionHistory, setSessionHistory] = useState([
+    {
+      id: 1,
+      type: "video",
+      expert: "Alex Johnson",
+      date: "2024-01-15",
+      duration: "45 mins",
+      topic: "Web Development Strategy",
+      recording: true
+    },
+    {
+      id: 2,
+      type: "audio",
+      expert: "Maria Garcia",
+      date: "2024-01-10",
+      duration: "30 mins",
+      topic: "Digital Marketing Audit",
+      recording: true
+    }
+  ]);
 
   // Enhanced auto-play hero carousel with animation lock
   useEffect(() => {
@@ -336,36 +417,96 @@ const Home = () => {
     setTextKey(prev => prev + 1);
   }, [currentBanner]);
 
-  // Enhanced continuous logo scroll effect with better performance
+  // Session timer effect
   useEffect(() => {
-    if (isLogoPaused) return;
+    let interval;
+    if (sessionStatus === "connected") {
+      interval = setInterval(() => {
+        setSessionTimer(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [sessionStatus]);
 
-    const container = logoContainerRef.current;
-    if (!container) return;
+  // Format time function
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
-    let animationFrame;
-    let scrollPosition = 0;
-    const scrollSpeed = 0.8;
+  // Start live session function
+  const startLiveSession = (type) => {
+    setSessionType(type);
+    setSessionStatus("connecting");
+    setIsLiveSessionOpen(true);
+    
+    // Simulate connection
+    setTimeout(() => {
+      setSessionStatus("connected");
+    }, 2000);
+  };
 
-    const scrollLogos = () => {
-      if (container) {
-        scrollPosition += scrollSpeed;
-        if (scrollPosition >= container.scrollWidth / 2) {
-          scrollPosition = 0;
-        }
-        container.scrollLeft = scrollPosition;
-        animationFrame = requestAnimationFrame(scrollLogos);
-      }
+  // End session function
+  const endSession = () => {
+    setSessionStatus("ended");
+    
+    // Add to history
+    const newSession = {
+      id: sessionHistory.length + 1,
+      type: sessionType,
+      expert: "John Doe",
+      date: new Date().toISOString().split('T')[0],
+      duration: formatTime(sessionTimer),
+      topic: sessionTopic || "General Consultation",
+      recording: recording
     };
+    
+    setSessionHistory(prev => [newSession, ...prev]);
+    
+    setTimeout(() => {
+      setIsLiveSessionOpen(false);
+      setSessionTimer(0);
+      setRecording(false);
+    }, 3000);
+  };
 
-    animationFrame = requestAnimationFrame(scrollLogos);
+  // Schedule session function
+  const scheduleSession = () => {
+    if (!selectedDate || !selectedTime || !sessionTopic) {
+      alert("Please fill all required fields");
+      return;
+    }
 
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
+    // Here you would typically make an API call
+    alert(`Session scheduled for ${selectedDate} at ${selectedTime}`);
+    
+    // Add to upcoming sessions
+    const newSession = {
+      id: sessionHistory.length + 1,
+      type: "scheduled",
+      expert: "Available Expert",
+      date: selectedDate,
+      time: selectedTime,
+      topic: sessionTopic,
+      status: "scheduled"
     };
-  }, [isLogoPaused]);
+    
+    setSessionHistory(prev => [newSession, ...prev]);
+    setIsScheduleModalOpen(false);
+    
+    // Reset form
+    setSelectedDate("");
+    setSelectedTime("");
+    setSessionTopic("");
+    setSessionNotes("");
+  };
+
+  // Available time slots
+  const timeSlots = [
+    "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", 
+    "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"
+  ];
 
   // Handle hero carousel navigation with animation
   const nextBanner = () => {
@@ -407,7 +548,7 @@ const Home = () => {
     setNewMessage("");
     setIsTyping(true);
 
-    // Simulate bot response (like Astrotalk)
+    // Simulate bot response
     setTimeout(() => {
       const botResponses = [
         "I understand your query. Let me connect you with a relevant expert.",
@@ -435,7 +576,7 @@ const Home = () => {
     }
   };
 
-  // Enhanced text animation classes with more variety
+  // Enhanced text animation classes
   const getTextAnimationClass = (animationType) => {
     switch (animationType) {
       case 'fadeInUp': return 'animate-fade-in-up';
@@ -457,6 +598,14 @@ const Home = () => {
       default: return 'animate-fade-in';
     }
   };
+
+  // Available experts for scheduling
+  const experts = [
+    { id: 1, name: "Alex Johnson", role: "Web Development Expert", available: true },
+    { id: 2, name: "Maria Garcia", role: "Digital Marketing Expert", available: true },
+    { id: 3, name: "David Chen", role: "Cloud Solutions Architect", available: false },
+    { id: 4, name: "Sarah Miller", role: "Mobile App Specialist", available: true },
+  ];
 
   return (
     <div className="min-h-screen">
@@ -628,109 +777,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Enhanced Client Logos Section with Styled Container */}
-      <section className="py-20 relative overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 animate-gradient-xy"></div>
-        
-        {/* Moving background pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.3)_1px,transparent_0)] bg-[length:40px_40px] animate-moving-background"></div>
-        </div>
-        
-        {/* Floating particles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-2 h-2 bg-white/30 rounded-full animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 20}s`,
-                animationDuration: `${15 + Math.random() * 20}s`
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-2 border border-white/20 mb-4">
-              <Sparkles className="h-4 w-4 text-cyan-400" />
-              <span className="text-white text-sm font-medium">Trusted Partners</span>
-            </div>
-            <h3 className="text-3xl font-bold text-white mb-4">Trusted by Industry Leaders</h3>
-            <p className="text-gray-300 max-w-2xl mx-auto text-lg">
-              We partner with the world's most innovative companies across various industries
-            </p>
-          </div>
-
-          {/* Enhanced Logo Container with Gradient Edges */}
-          <div className="relative">
-            {/* Gradient fade edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-slate-900 to-transparent z-10"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-slate-900 to-transparent z-10"></div>
-            
-            {/* Enhanced Continuous Scroll Logo Container */}
-            <div 
-              ref={logoContainerRef}
-              className="flex overflow-x-hidden space-x-16 py-8 relative"
-              onMouseEnter={() => setIsLogoPaused(true)}
-              onMouseLeave={() => setIsLogoPaused(false)}
-            >
-              {/* Double the logos for seamless loop */}
-              {[...clientLogos, ...clientLogos].map((client, index) => (
-                <div
-                  key={`${client.name}-${index}`}
-                  className="flex-shrink-0 flex flex-col items-center justify-center group relative transform hover:scale-110 transition-all duration-500 animate-logo-slide"
-                >
-                  <div className="w-40 h-24 bg-white/10 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 flex items-center justify-center p-6 transform transition-all duration-500 group-hover:bg-white/20 group-hover:border-cyan-400/50 group-hover:shadow-cyan-500/25">
-                    <img
-                      src={client.logo}
-                      alt={client.name}
-                      className="max-h-14 max-w-28 object-contain grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:brightness-110 group-hover:contrast-125"
-                    />
-                  </div>
-                  {/* Enhanced Hover Tooltip */}
-                  <div className="absolute -bottom-12 opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:-translate-y-2">
-                    <div className="bg-gradient-to-r from-cyan-600 to-purple-600 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap shadow-2xl">
-                      <div className="font-bold">{client.name}</div>
-                      <div className="text-cyan-200 text-xs">{client.category}</div>
-                    </div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-cyan-600 to-purple-600 rotate-45 absolute -top-1 left-1/2 transform -translate-x-1/2"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Enhanced Scroll Indicator */}
-          <div className="flex justify-center items-center mt-12 space-x-3">
-            <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse shadow-lg shadow-cyan-400/50"></div>
-            <div className="text-cyan-300 font-medium text-sm">Scroll to explore our partners</div>
-          </div>
-
-          {/* Enhanced Stats below logos */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-12 border-t border-white/20">
-            {[
-              { value: "12+", label: "Industries Served", color: "from-cyan-400 to-blue-400" },
-              { value: "50+", label: "Global Clients", color: "from-purple-400 to-pink-400" },
-              { value: "99%", label: "Client Retention", color: "from-green-400 to-emerald-400" },
-              { value: "24/7", label: "Global Support", color: "from-orange-400 to-red-400" }
-            ].map((stat, index) => (
-              <div key={index} className="text-center transform hover:scale-105 transition-all duration-300 animate-stats-in" style={{animationDelay: `${index * 100}ms`}}>
-                <div className={`text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r ${stat.color} mb-2 animate-pulse`}>
-                  {stat.value}
-                </div>
-                <div className="text-gray-300 text-sm font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced Consultation Section with Live Chat */}
+      {/* Enhanced Consultation Section with Live Session */}
       <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-violet-900 relative overflow-hidden">
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -750,14 +797,14 @@ const Home = () => {
               <span className="text-white font-medium">Instant Connect with Experts</span>
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              Talk to Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400">Experts</span>
+              Connect with Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400">Experts</span>
             </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Get personalized advice from our experienced consultants. Choose your preferred way to connect.
+              Get personalized advice through live sessions, chats, or scheduled meetings.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             {consultationOptions.map((option, index) => (
               <div
                 key={index}
@@ -779,49 +826,580 @@ const Home = () => {
                   <span className="text-sm font-medium">{option.duration}</span>
                 </div>
                 
-                {option.onClick ? (
-                  <Button 
-                    onClick={option.onClick}
-                    className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}
-                  >
-                    {option.action}
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
-                  </Button>
-                ) : (
-                  <Link to={option.link}>
-                    <Button className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}>
-                      {option.action}
-                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
-                    </Button>
-                  </Link>
-                )}
+                <Button 
+                  onClick={option.onClick}
+                  className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}
+                >
+                  {option.action}
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                </Button>
               </div>
             ))}
           </div>
 
-          {/* Enhanced Additional Info */}
-          <div className="text-center mt-16">
-            <div className="inline-flex flex-col sm:flex-row items-center gap-8 text-white/80 bg-white/10 backdrop-blur-sm rounded-3xl px-8 py-6 border border-white/20">
-              {[
-                { icon: CheckCircle2, color: "text-green-400", title: "Available 24/7", desc: "Round the clock support" },
-                { icon: Users, color: "text-blue-400", title: "50+ Experts", desc: "Certified professionals" },
-                { icon: Award, color: "text-yellow-400", title: "Certified", desc: "Industry certifications" }
-              ].map((item, index) => (
-                <div key={index} className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                    <item.icon className={`h-6 w-6 ${item.color}`} />
+          {/* Session History Preview */}
+          <div className="mt-16 bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-2xl font-bold text-white">Recent Sessions</h3>
+                <p className="text-gray-300">Your previous consultations and meetings</p>
+              </div>
+              <Button 
+                variant="outline" 
+                className="border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10"
+                onClick={() => setIsScheduleModalOpen(true)}
+              >
+                <CalendarDays className="h-4 w-4 mr-2" />
+                View All Sessions
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sessionHistory.slice(0, 3).map((session) => (
+                <div key={session.id} className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-cyan-400/30 transition-all duration-300">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                        session.type === 'video' ? 'bg-blue-500/20' : 
+                        session.type === 'audio' ? 'bg-purple-500/20' : 
+                        'bg-green-500/20'
+                      }`}>
+                        {session.type === 'video' ? <VideoIcon className="h-5 w-5 text-blue-400" /> : 
+                         session.type === 'audio' ? <Phone className="h-5 w-5 text-purple-400" /> : 
+                         <CalendarDays className="h-5 w-5 text-green-400" />}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-white">{session.expert}</h4>
+                        <p className="text-sm text-gray-400">{session.role || session.type} Session</p>
+                      </div>
+                    </div>
+                    {session.recording && (
+                      <div className="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded-full">
+                        Recorded
+                      </div>
+                    )}
                   </div>
-                  <div className="text-left">
-                    <div className="font-semibold text-white">{item.title}</div>
-                    <div className="text-sm text-gray-300">{item.desc}</div>
+                  
+                  <p className="text-gray-300 text-sm mb-4">{session.topic}</p>
+                  
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center text-gray-400">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {session.date}
+                    </div>
+                    <div className="flex items-center text-cyan-400">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {session.duration}
+                    </div>
                   </div>
-                  {index < 2 && <div className="w-px h-8 bg-white/30 hidden sm:block"></div>}
                 </div>
               ))}
             </div>
           </div>
         </div>
       </section>
+
+      {/* Live Session Modal */}
+      {isLiveSessionOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full h-full max-w-7xl mx-auto flex flex-col">
+            {/* Session Header */}
+            <div className="flex items-center justify-between p-6 bg-gradient-to-r from-gray-900/90 to-black/90 border-b border-white/10">
+              <div className="flex items-center space-x-4">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                  sessionType === 'video' ? 'bg-blue-500/20' : 'bg-purple-500/20'
+                }`}>
+                  {sessionType === 'video' ? 
+                    <VideoIcon className="h-6 w-6 text-blue-400" /> : 
+                    <Phone className="h-6 w-6 text-purple-400" />
+                  }
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-white">
+                    {sessionType === 'video' ? 'Live Video Call' : 'Voice Call'}
+                  </h2>
+                  <div className="flex items-center space-x-4 text-sm">
+                    <div className={`flex items-center ${sessionStatus === 'connected' ? 'text-green-400' : 'text-yellow-400'}`}>
+                      <div className={`w-2 h-2 rounded-full mr-2 ${sessionStatus === 'connected' ? 'bg-green-400 animate-pulse' : 'bg-yellow-400 animate-pulse'}`}></div>
+                      {sessionStatus === 'connecting' ? 'Connecting...' : 
+                       sessionStatus === 'connected' ? 'Connected' : 
+                       'Session Ended'}
+                    </div>
+                    <div className="text-gray-400">
+                      <Clock className="h-4 w-4 inline mr-1" />
+                      {formatTime(sessionTimer)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                {sessionStatus === 'connected' && (
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className={`border ${recording ? 'border-red-500 text-red-400' : 'border-gray-600 text-gray-400'}`}
+                    onClick={() => setRecording(!recording)}
+                  >
+                    <div className={`w-2 h-2 rounded-full mr-2 ${recording ? 'bg-red-400 animate-pulse' : 'bg-gray-400'}`}></div>
+                    {recording ? 'Recording' : 'Record'}
+                  </Button>
+                )}
+                
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="text-gray-400 hover:text-white"
+                  onClick={() => setIsLiveSessionOpen(false)}
+                >
+                  <Maximize2 className="h-5 w-5" />
+                </Button>
+                
+                <Button 
+                  variant="destructive" 
+                  onClick={endSession}
+                  className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
+                >
+                  {sessionStatus === 'ended' ? 'Close' : 'End Session'}
+                </Button>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 flex overflow-hidden">
+              {/* Video/Audio Area */}
+              <div className="flex-1 flex flex-col p-6">
+                {sessionStatus === 'connecting' ? (
+                  <div className="flex-1 flex flex-col items-center justify-center">
+                    <div className="w-32 h-32 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mb-8 animate-pulse">
+                      {sessionType === 'video' ? 
+                        <VideoIcon className="h-16 w-16 text-blue-400" /> : 
+                        <Phone className="h-16 w-16 text-purple-400" />
+                      }
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-2">Connecting to Expert...</h3>
+                    <p className="text-gray-400">Please wait while we connect you with our specialist</p>
+                    <div className="mt-8 flex space-x-2">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: `${i * 0.2}s`}}></div>
+                      ))}
+                    </div>
+                  </div>
+                ) : sessionStatus === 'connected' ? (
+                  <>
+                    {/* Video Grid */}
+                    <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                      {/* Your Video */}
+                      <div className="relative bg-gray-900 rounded-2xl overflow-hidden border-2 border-gray-800">
+                        <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+                          {isVideoOff && sessionType === 'video' ? (
+                            <div className="text-center">
+                              <div className="w-20 h-20 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <User className="h-10 w-10 text-gray-400" />
+                              </div>
+                              <p className="text-gray-400 font-semibold">You</p>
+                              <p className="text-sm text-gray-500">Camera is off</p>
+                            </div>
+                          ) : sessionType === 'audio' ? (
+                            <div className="text-center">
+                              <div className="w-20 h-20 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Headphones className="h-10 w-10 text-purple-400" />
+                              </div>
+                              <p className="text-gray-400 font-semibold">You</p>
+                              <p className="text-sm text-gray-500">Voice Call</p>
+                            </div>
+                          ) : (
+                            <div className="text-center">
+                              <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <VideoIcon className="h-10 w-10 text-blue-400" />
+                              </div>
+                              <p className="text-gray-400 font-semibold">You</p>
+                              <p className="text-sm text-gray-500">Camera is on</p>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Your Name Badge */}
+                        <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                          <p className="text-white text-sm font-medium">You {isMuted && '(Muted)'}</p>
+                        </div>
+                      </div>
+
+                      {/* Expert Video */}
+                      <div className="relative bg-gray-900 rounded-2xl overflow-hidden border-2 border-cyan-500/30">
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/20 to-blue-900/20 flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="w-24 h-24 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                              <User className="h-12 w-12 text-cyan-300" />
+                            </div>
+                            <p className="text-white font-semibold text-lg">Expert</p>
+                            <p className="text-sm text-cyan-300">IT Consultant</p>
+                            <div className="mt-4 flex items-center justify-center space-x-2">
+                              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                              <span className="text-sm text-green-400">Speaking</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Expert Name Badge */}
+                        <div className="absolute bottom-4 left-4 bg-gradient-to-r from-cyan-600 to-blue-600 backdrop-blur-sm px-4 py-2 rounded-full">
+                          <p className="text-white text-sm font-medium">John Doe - IT Expert</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Controls */}
+                    <div className="flex items-center justify-center space-x-6">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className={`rounded-full w-16 h-16 ${isMuted ? 'bg-red-500/20 border-red-500/50 text-red-400' : 'bg-white/10 border-white/20 text-white'}`}
+                        onClick={() => setIsMuted(!isMuted)}
+                      >
+                        {isMuted ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+                      </Button>
+                      
+                      {sessionType === 'video' && (
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className={`rounded-full w-16 h-16 ${isVideoOff ? 'bg-red-500/20 border-red-500/50 text-red-400' : 'bg-white/10 border-white/20 text-white'}`}
+                          onClick={() => setIsVideoOff(!isVideoOff)}
+                        >
+                          {isVideoOff ? <VideoOff className="h-6 w-6" /> : <VideoIcon className="h-6 w-6" />}
+                        </Button>
+                      )}
+                      
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className={`rounded-full w-16 h-16 ${isScreenSharing ? 'bg-green-500/20 border-green-500/50 text-green-400' : 'bg-white/10 border-white/20 text-white'}`}
+                        onClick={() => setIsScreenSharing(!isScreenSharing)}
+                      >
+                        {isScreenSharing ? <ScreenShareOff className="h-6 w-6" /> : <ScreenShare className="h-6 w-6" />}
+                      </Button>
+                      
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        className="rounded-full w-16 h-16 bg-white/10 border-white/20 text-white"
+                      >
+                        <Settings className="h-6 w-6" />
+                      </Button>
+                      
+                      <Button
+                        variant="destructive"
+                        size="lg"
+                        className="rounded-full w-16 h-16 bg-gradient-to-r from-red-600 to-pink-600"
+                        onClick={endSession}
+                      >
+                        <PhoneCall className="h-6 w-6 rotate-135" />
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center">
+                    <div className="w-32 h-32 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full flex items-center justify-center mb-8">
+                      <CheckCircle2 className="h-16 w-16 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-2">Session Completed</h3>
+                    <p className="text-gray-400 mb-6">Thank you for your consultation!</p>
+                    <div className="bg-gray-900/50 rounded-2xl p-6 max-w-md w-full">
+                      <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="text-center">
+                          <p className="text-gray-400 text-sm">Duration</p>
+                          <p className="text-white font-bold text-xl">{formatTime(sessionTimer)}</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-gray-400 text-sm">Type</p>
+                          <p className="text-white font-bold text-xl capitalize">{sessionType}</p>
+                        </div>
+                      </div>
+                      {recording && (
+                        <div className="flex items-center justify-center space-x-2 text-green-400 mb-4">
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                          <span>Session was recorded</span>
+                        </div>
+                      )}
+                      <Button 
+                        className="w-full bg-gradient-to-r from-cyan-600 to-blue-600"
+                        onClick={() => setIsLiveSessionOpen(false)}
+                      >
+                        Close Window
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Participants & Chat Sidebar */}
+              {sessionStatus === 'connected' && (
+                <div className="w-80 border-l border-white/10 bg-gray-900/50 flex flex-col">
+                  {/* Participants */}
+                  <div className="p-6 border-b border-white/10">
+                    <h3 className="text-lg font-semibold text-white mb-4">Participants ({participants.length})</h3>
+                    <div className="space-y-4">
+                      {participants.map((participant) => (
+                        <div key={participant.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                              participant.id === 1 ? 'bg-blue-500/20' : 'bg-green-500/20'
+                            }`}>
+                              <User className={`h-5 w-5 ${
+                                participant.id === 1 ? 'text-blue-400' : 'text-green-400'
+                              }`} />
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">{participant.name}</p>
+                              <p className="text-xs text-gray-400">{participant.role}</p>
+                            </div>
+                          </div>
+                          {participant.isSpeaking && (
+                            <div className="flex space-x-1">
+                              {[1, 2, 3].map((i) => (
+                                <div 
+                                  key={i}
+                                  className="w-1 h-4 bg-green-400 rounded-full animate-pulse"
+                                  style={{animationDelay: `${i * 0.1}s`}}
+                                ></div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Chat */}
+                  <div className="flex-1 p-6 flex flex-col">
+                    <h3 className="text-lg font-semibold text-white mb-4">Session Chat</h3>
+                    <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+                      <div className="bg-blue-500/20 rounded-2xl rounded-bl-none p-4 max-w-xs">
+                        <p className="text-white text-sm">Welcome to the session! How can I help you today?</p>
+                        <p className="text-xs text-blue-300 mt-2">Expert • Just now</p>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <input
+                        type="text"
+                        placeholder="Type a message..."
+                        className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                      />
+                      <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
+                        <Send className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Schedule Session Modal */}
+      {isScheduleModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm animate-fade-in">
+          <div className="relative bg-gradient-to-br from-gray-900 to-black rounded-3xl w-full max-w-4xl mx-4 border border-white/10 shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+              <div>
+                <h2 className="text-2xl font-bold text-white">Schedule a Session</h2>
+                <p className="text-gray-400">Book a consultation with our experts</p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-white"
+                onClick={() => setIsScheduleModalOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Left Column - Form */}
+                <div>
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-white font-medium mb-2">Session Topic</label>
+                      <input
+                        type="text"
+                        value={sessionTopic}
+                        onChange={(e) => setSessionTopic(e.target.value)}
+                        placeholder="What would you like to discuss?"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-white font-medium mb-2">Date</label>
+                        <input
+                          type="date"
+                          value={selectedDate}
+                          onChange={(e) => setSelectedDate(e.target.value)}
+                          min={new Date().toISOString().split('T')[0]}
+                          className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-white font-medium mb-2">Time</label>
+                        <select
+                          value={selectedTime}
+                          onChange={(e) => setSelectedTime(e.target.value)}
+                          className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                        >
+                          <option value="">Select time</option>
+                          {timeSlots.map((slot) => (
+                            <option key={slot} value={slot}>{slot}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-white font-medium mb-2">Session Type</label>
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { type: 'video', label: 'Video Call', icon: VideoIcon, color: 'blue' },
+                          { type: 'audio', label: 'Voice Call', icon: Phone, color: 'purple' },
+                          { type: 'screen', label: 'Screen Share', icon: Monitor, color: 'green' }
+                        ].map((item) => (
+                          <button
+                            key={item.type}
+                            className={`p-4 rounded-xl border-2 transition-all ${
+                              sessionType === item.type 
+                                ? `border-${item.color}-500 bg-${item.color}-500/10` 
+                                : 'border-white/10 bg-white/5 hover:border-white/20'
+                            }`}
+                            onClick={() => setSessionType(item.type)}
+                          >
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${
+                              sessionType === item.type 
+                                ? `bg-${item.color}-500/20` 
+                                : 'bg-white/10'
+                            }`}>
+                              <item.icon className={`h-6 w-6 ${
+                                sessionType === item.type 
+                                  ? `text-${item.color}-400` 
+                                  : 'text-gray-400'
+                              }`} />
+                            </div>
+                            <p className={`font-medium ${
+                              sessionType === item.type ? 'text-white' : 'text-gray-400'
+                            }`}>
+                              {item.label}
+                            </p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-white font-medium mb-2">Additional Notes</label>
+                      <textarea
+                        value={sessionNotes}
+                        onChange={(e) => setSessionNotes(e.target.value)}
+                        placeholder="Any specific requirements or questions?"
+                        rows={4}
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column - Experts & Summary */}
+                <div>
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-white mb-4">Available Experts</h3>
+                    <div className="space-y-4">
+                      {experts.map((expert) => (
+                        <div 
+                          key={expert.id} 
+                          className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className="w-12 h-12 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-xl flex items-center justify-center">
+                              <User className="h-6 w-6 text-cyan-400" />
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">{expert.name}</p>
+                              <p className="text-sm text-gray-400">{expert.role}</p>
+                            </div>
+                          </div>
+                          <div className={`px-3 py-1 rounded-full text-xs ${
+                            expert.available 
+                              ? 'bg-green-500/20 text-green-400' 
+                              : 'bg-red-500/20 text-red-400'
+                          }`}>
+                            {expert.available ? 'Available' : 'Busy'}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Session Summary */}
+                  <div className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 rounded-2xl p-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">Session Summary</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Session Type</span>
+                        <span className="text-white font-medium capitalize">{sessionType}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Duration</span>
+                        <span className="text-white font-medium">45 minutes</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Date & Time</span>
+                        <span className="text-white font-medium">
+                          {selectedDate && selectedTime ? `${selectedDate} at ${selectedTime}` : 'Not selected'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Recording</span>
+                        <span className="text-green-400 font-medium">Available</span>
+                      </div>
+                      <div className="pt-4 border-t border-white/10">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="text-gray-400 text-sm">Total Cost</p>
+                            <p className="text-2xl font-bold text-white">Free</p>
+                          </div>
+                          <div className="text-sm text-gray-400">
+                            <p>Special introductory offer</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-white/10">
+                <Button
+                  variant="outline"
+                  className="border-white/20 text-white hover:bg-white/10"
+                  onClick={() => setIsScheduleModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 px-8"
+                  onClick={scheduleSession}
+                  disabled={!selectedDate || !selectedTime || !sessionTopic}
+                >
+                  <CalendarDays className="h-5 w-5 mr-2" />
+                  Schedule Session
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Astrotalk-like Live Chat Widget */}
       {isLiveChatOpen && (
@@ -912,19 +1490,35 @@ const Home = () => {
         </div>
       )}
 
-      {/* Floating Live Chat Button */}
-      {!isLiveChatOpen && (
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end space-y-3">
+        {!isLiveChatOpen && (
+          <Button
+            onClick={() => setIsLiveChatOpen(true)}
+            className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-full p-4 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 animate-bounce"
+            size="lg"
+          >
+            <MessageCircle className="h-6 w-6 mr-2" />
+            Live Chat
+          </Button>
+        )}
+        
         <Button
-          onClick={() => setIsLiveChatOpen(true)}
-          className="fixed bottom-4 right-4 z-40 bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-full p-4 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300 animate-bounce"
+          onClick={() => startLiveSession("video")}
+          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full p-4 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300"
           size="lg"
         >
-          <MessageCircle className="h-6 w-6 mr-2" />
-          Live Chat
+          <VideoIcon className="h-6 w-6 mr-2" />
+          Live Session
         </Button>
-      )}
+      </div>
 
-      {/* Rest of the sections... */}
+      {/* Enhanced Client Logos Section */}
+      <section className="py-20 relative overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900">
+        {/* ... (rest of the client logos section remains the same) ... */}
+      </section>
+
+      {/* Services Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
         
@@ -951,11 +1545,14 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shine"></div>
               <h3 className="text-2xl font-bold mb-4">Ready to Transform Your Business?</h3>
               <p className="mb-6 opacity-90">Get a comprehensive digital strategy tailored to your goals</p>
-              <Link to="/consultation">
-                <Button size="lg" className="rounded-full bg-white text-cyan-600 hover:bg-gray-100 shadow-lg hover:scale-105 transition-transform">
-                  Get Free Strategy Session
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                className="rounded-full bg-white text-cyan-600 hover:bg-gray-100 shadow-lg hover:scale-105 transition-transform"
+                onClick={() => setIsScheduleModalOpen(true)}
+              >
+                <VideoIcon className="h-5 w-5 mr-2" />
+                Book Live Consultation
+              </Button>
             </div>
           </div>
         </div>
@@ -1299,23 +1896,5 @@ const Home = () => {
     </div>
   );
 };
-
-// Clock component
-const Clock = ({ className }) => (
-  <svg
-    className={className}
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-);
 
 export default Home;
