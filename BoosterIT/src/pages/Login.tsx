@@ -1,22 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Lock, X, Eye, EyeOff, Phone } from "lucide-react";
+import { Mail, Lock, X, Eye, EyeOff } from "lucide-react";
+import { authService } from "@/services/authService";
+import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast({
         title: "Missing Information",
@@ -26,10 +30,24 @@ const Login = () => {
       return;
     }
 
-    toast({
-      title: "Login Successful!",
-      description: "Welcome back to BoosterEraIT .",
-    });
+    setIsLoading(true);
+    try {
+      const data = await authService.login(email, password);
+      login(data.token, data.user);
+      toast({
+        title: "Login Successful!",
+        description: "Welcome back to BoosterEraIT.",
+      });
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "Login Failed",
+        description: error.message || "Something went wrong.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -50,8 +68,8 @@ const Login = () => {
           <div className="max-w-md mx-auto">
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl animate-fade-in relative border border-white/20">
               {/* Close Button */}
-              <Link 
-                to="/" 
+              <Link
+                to="/"
                 className="absolute -top-3 -right-3 w-10 h-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 group backdrop-blur-sm"
               >
                 <X className="h-5 w-5 text-white group-hover:text-gray-200" />
@@ -66,53 +84,19 @@ const Login = () => {
                 <p className="text-white/80 text-sm">Sign in to your BoosterEraIT account</p>
               </div>
 
-              {/* Login Method Toggle */}
-              <div className="flex bg-white/10 rounded-2xl p-1 mb-6 backdrop-blur-sm">
-                <button
-                  type="button"
-                  onClick={() => setLoginMethod("email")}
-                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    loginMethod === "email" 
-                      ? "bg-white text-purple-900 shadow-lg" 
-                      : "text-white/80 hover:text-white"
-                  }`}
-                >
-                  Email
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setLoginMethod("phone")}
-                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    loginMethod === "phone" 
-                      ? "bg-white text-purple-900 shadow-lg" 
-                      : "text-white/80 hover:text-white"
-                  }`}
-                >
-                  Phone
-                </button>
-              </div>
-
               {/* Login Form */}
               <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Email/Phone Input */}
+                {/* Email Input */}
                 <div>
-                  <Label htmlFor="login" className="text-white text-sm font-medium mb-2 block">
-                    {loginMethod === "email" ? "Email Address" : "Phone Number"}
+                  <Label htmlFor="email" className="text-white text-sm font-medium mb-2 block">
+                    Email Address
                   </Label>
                   <div className="relative">
-                    {loginMethod === "email" ? (
-                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
-                    ) : (
-                      <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
-                    )}
+                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
                     <Input
-                      id="login"
-                      type={loginMethod === "email" ? "email" : "tel"}
-                      placeholder={
-                        loginMethod === "email" 
-                          ? "john@example.com" 
-                          : "+91 98765 43210"
-                      }
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="pl-12 h-12 text-base bg-white/5 border-white/20 text-white placeholder-white/40 rounded-xl focus:ring-2 focus:ring-white/30 focus:border-transparent"
@@ -150,23 +134,24 @@ const Login = () => {
                 {/* Remember Me & Forgot Password */}
                 <div className="flex items-center justify-between">
                   <label className="flex items-center">
-                    <input 
-                      type="checkbox" 
-                      className="mr-3 rounded border-white/30 bg-white/5 text-purple-500 focus:ring-purple-500" 
+                    <input
+                      type="checkbox"
+                      className="mr-3 rounded border-white/30 bg-white/5 text-purple-500 focus:ring-purple-500"
                     />
                     <span className="text-white/80 text-sm">Remember me</span>
                   </label>
-                  <a href="#" className="text-yellow-300 hover:text-yellow-200 text-sm font-medium transition-colors">
+                  <Link to="/forgot-password" className="text-yellow-300 hover:text-yellow-200 text-sm font-medium transition-colors">
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Login Button */}
                 <Button
                   type="submit"
-                  className="w-full rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-base font-semibold py-6 shadow-lg hover:shadow-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 transform hover:-translate-y-0.5"
+                  disabled={isLoading}
+                  className="w-full rounded-xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-base font-semibold py-6 shadow-lg hover:shadow-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Sign In
+                  {isLoading ? "Signing In..." : "Sign In"}
                 </Button>
               </form>
 
@@ -182,9 +167,9 @@ const Login = () => {
 
               {/* Social Login */}
               <div className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full rounded-xl py-4 text-sm bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white transition-all duration-200" 
+                <Button
+                  variant="outline"
+                  className="w-full rounded-xl py-4 text-sm bg-white/5 border-white/20 text-white hover:bg-white/10 hover:text-white transition-all duration-200"
                   type="button"
                 >
                   <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24">
@@ -212,7 +197,7 @@ const Login = () => {
               {/* Sign Up Link */}
               <div className="mt-8 text-center text-white/80 text-sm">
                 Don't have an account?{" "}
-                <Link to="/signup" className="text-yellow-300 font-semibold hover:text-yellow-200 transition-colors">
+                <Link to="/register" className="text-yellow-300 font-semibold hover:text-yellow-200 transition-colors">
                   Create new account
                 </Link>
               </div>

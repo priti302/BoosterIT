@@ -8,10 +8,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
+
+  // Check if user can go live (EXPERT or SUPER_ADMIN)
+  const canGoLive = user?.role === "EXPERT" || user?.role === "SUPER_ADMIN";
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -32,7 +37,7 @@ const Navbar = () => {
               <span className="text-white font-bold text-xl">B</span>
             </div>
             <span className="text-xl font-bold text-foreground hidden sm:block">
-           BoosterIT
+              BoosterIT
             </span>
           </Link>
 
@@ -42,9 +47,8 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  isActive(link.path) ? "text-primary" : "text-foreground"
-                }`}
+                className={`text-sm font-medium transition-colors hover:text-primary ${isActive(link.path) ? "text-primary" : "text-foreground"
+                  }`}
               >
                 {link.name}
               </Link>
@@ -69,6 +73,16 @@ const Navbar = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {canGoLive && (
+              <Link
+                to="/expert/live"
+                className={`text-sm font-medium transition-colors hover:text-primary ${isActive("/expert/live") ? "text-primary" : "text-foreground"
+                  }`}
+              >
+                Go Live
+              </Link>
+            )}
 
             {/* Login Button */}
             <Link to="/login">
@@ -96,9 +110,8 @@ const Navbar = () => {
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    isActive(link.path) ? "text-primary" : "text-foreground"
-                  }`}
+                  className={`text-sm font-medium transition-colors hover:text-primary ${isActive(link.path) ? "text-primary" : "text-foreground"
+                    }`}
                 >
                   {link.name}
                 </Link>
@@ -117,6 +130,15 @@ const Navbar = () => {
               >
                 Digital Marketing
               </Link>
+              {canGoLive && (
+                <Link
+                  to="/expert/live"
+                  onClick={() => setIsOpen(false)}
+                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                >
+                  Go Live
+                </Link>
+              )}
               <Link to="/login" onClick={() => setIsOpen(false)}>
                 <Button className="w-full rounded-full gradient-primary text-white shadow-md">
                   Login
