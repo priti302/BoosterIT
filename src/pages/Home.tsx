@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
-import { 
-  Code, 
-  Smartphone, 
-  Cloud, 
-  Database, 
-  TrendingUp, 
-  Users, 
-  Award, 
+import {
+  Code,
+  Smartphone,
+  Cloud,
+  Database,
+  TrendingUp,
+  Users,
+  Award,
   Zap,
   Target,
   Shield,
@@ -68,6 +70,8 @@ import Footer from "@/components/Footer";
 import { useState, useEffect, useRef } from "react";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const features = [
     {
       icon: Code,
@@ -137,63 +141,63 @@ const Home = () => {
 
   // Enhanced client logos with better styling
   const clientLogos = [
-    { 
-      name: "Microsoft", 
+    {
+      name: "Microsoft",
       logo: "https://cdn.worldvectorlogo.com/logos/microsoft-5.svg",
       category: "Technology"
     },
-    { 
-      name: "Google", 
+    {
+      name: "Google",
       logo: "https://cdn.worldvectorlogo.com/logos/google-2015.svg",
       category: "Technology"
     },
-    { 
-      name: "Amazon", 
+    {
+      name: "Amazon",
       logo: "https://cdn.worldvectorlogo.com/logos/amazon-2.svg",
       category: "E-commerce"
     },
-    { 
-      name: "Netflix", 
+    {
+      name: "Netflix",
       logo: "https://cdn.worldvectorlogo.com/logos/netflix-3.svg",
       category: "Entertainment"
     },
-    { 
-      name: "Spotify", 
+    {
+      name: "Spotify",
       logo: "https://cdn.worldvectorlogo.com/logos/spotify-1.svg",
       category: "Music"
     },
-    { 
-      name: "Adobe", 
+    {
+      name: "Adobe",
       logo: "https://cdn.worldvectorlogo.com/logos/adobe-2.svg",
       category: "Creative"
     },
-    { 
-      name: "Salesforce", 
+    {
+      name: "Salesforce",
       logo: "https://cdn.worldvectorlogo.com/logos/salesforce-2.svg",
       category: "CRM"
     },
-    { 
-      name: "Uber", 
+    {
+      name: "Uber",
       logo: "https://cdn.worldvectorlogo.com/logos/uber-3.svg",
       category: "Transportation"
     },
-    { 
-      name: "Airbnb", 
+    {
+      name: "Airbnb",
       logo: "https://cdn.worldvectorlogo.com/logos/airbnb-1.svg",
       category: "Travel"
     },
-    { 
-      name: "Slack", 
+    {
+      name: "Slack",
       logo: "https://cdn.worldvectorlogo.com/logos/slack-1.svg",
       category: "Communication"
     },
-    { 
-      name: "Zoom", 
+    {
+      name: "Zoom",
       logo: "https://cdn.worldvectorlogo.com/logos/zoom-1.svg",
       category: "Communication"
     },
-    { 
-      name: "Shopify", 
+    {
+      name: "Shopify",
       logo: "https://cdn.worldvectorlogo.com/logos/shopify-1.svg",
       category: "E-commerce"
     },
@@ -298,7 +302,8 @@ const Home = () => {
       duration: "Available 24/7",
       action: "Start Chat",
       color: "from-green-500 to-emerald-600",
-      onClick: () => setIsLiveChatOpen(true)
+      // onClick: () => setIsLiveChatOpen(true)
+        onClick: () => navigate("/experts")  
     },
     {
       icon: VideoIcon,
@@ -440,7 +445,7 @@ const Home = () => {
     setSessionType(type);
     setSessionStatus("connecting");
     setIsLiveSessionOpen(true);
-    
+
     // Simulate connection
     setTimeout(() => {
       setSessionStatus("connected");
@@ -450,7 +455,7 @@ const Home = () => {
   // End session function
   const endSession = () => {
     setSessionStatus("ended");
-    
+
     // Add to history
     const newSession = {
       id: sessionHistory.length + 1,
@@ -461,9 +466,9 @@ const Home = () => {
       topic: sessionTopic || "General Consultation",
       recording: recording
     };
-    
+
     setSessionHistory(prev => [newSession, ...prev]);
-    
+
     setTimeout(() => {
       setIsLiveSessionOpen(false);
       setSessionTimer(0);
@@ -480,7 +485,7 @@ const Home = () => {
 
     // Here you would typically make an API call
     alert(`Session scheduled for ${selectedDate} at ${selectedTime}`);
-    
+
     // Add to upcoming sessions
     const newSession = {
       id: sessionHistory.length + 1,
@@ -491,10 +496,10 @@ const Home = () => {
       topic: sessionTopic,
       status: "scheduled"
     };
-    
+
     setSessionHistory(prev => [newSession, ...prev]);
     setIsScheduleModalOpen(false);
-    
+
     // Reset form
     setSelectedDate("");
     setSelectedTime("");
@@ -504,7 +509,7 @@ const Home = () => {
 
   // Available time slots
   const timeSlots = [
-    "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", 
+    "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
     "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"
   ];
 
@@ -557,7 +562,7 @@ const Home = () => {
         "Our experts have extensive experience with similar requirements.",
         "Let me provide you with more detailed information about this."
       ];
-      
+
       const botMessage = {
         id: chatMessages.length + 2,
         text: botResponses[Math.floor(Math.random() * botResponses.length)],
@@ -618,11 +623,10 @@ const Home = () => {
           {heroBanners.map((banner, index) => (
             <div
               key={banner.id}
-              className={`absolute inset-0 transition-all duration-1000 transform ${
-                index === currentBanner 
-                  ? "opacity-100 scale-100" 
+              className={`absolute inset-0 transition-all duration-1000 transform ${index === currentBanner
+                  ? "opacity-100 scale-100"
                   : "opacity-0 scale-105"
-              }`}
+                }`}
             >
               {banner.media.type === "video" ? (
                 <video
@@ -648,10 +652,10 @@ const Home = () => {
             </div>
           ))}
         </div>
-        
+
         {/* Animated tech pattern overlay */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20 z-10"></div>
-        
+
         {/* Vertical Carousel Controls - Right Side */}
         <div className="absolute right-8 top-1/2 transform -translate-y-1/2 z-30 flex flex-col items-center space-y-4">
           {/* Play/Pause */}
@@ -663,7 +667,7 @@ const Home = () => {
           >
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
-          
+
           {/* Navigation Arrows */}
           <div className="flex flex-col space-y-2">
             <Button
@@ -690,16 +694,15 @@ const Home = () => {
           {heroBanners.map((banner, index) => (
             <button
               key={banner.id}
-              className={`flex items-center justify-center w-3 h-3 rounded-full transition-all duration-300 transform ${
-                index === currentBanner 
-                  ? "bg-white scale-125 ring-2 ring-white/50" 
+              className={`flex items-center justify-center w-3 h-3 rounded-full transition-all duration-300 transform ${index === currentBanner
+                  ? "bg-white scale-125 ring-2 ring-white/50"
                   : "bg-white/50 hover:bg-white/70 scale-100"
-              }`}
+                }`}
               onClick={() => goToBanner(index)}
             />
           ))}
         </div>
-        
+
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
           <div key={textKey} className="max-w-4xl mx-auto text-center">
             {/* Animated Badge */}
@@ -711,7 +714,7 @@ const Home = () => {
                 </span>
               </div>
             </div>
-            
+
             {/* Enhanced Animated Title with separate animations */}
             <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight ${getTextAnimationClass(heroBanners[currentBanner].titleAnimation)}`}>
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-300 to-purple-300 animate-gradient-x block">
@@ -721,12 +724,12 @@ const Home = () => {
                 {heroBanners[currentBanner].subtitle}
               </span>
             </h1>
-            
+
             {/* Enhanced Animated Description */}
             <p className={`text-xl sm:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed ${getTextAnimationClass(heroBanners[currentBanner].descriptionAnimation)}`}>
               {heroBanners[currentBanner].description}
             </p>
-            
+
             {/* Enhanced Animated Buttons */}
             <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
               <Link to="/consultation">
@@ -747,7 +750,7 @@ const Home = () => {
             {/* Enhanced Animated Stats */}
             <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto ${getTextAnimationClass(heroBanners[currentBanner].textAnimation)}`}>
               {Object.entries(heroBanners[currentBanner].stats).map(([key, value], index) => (
-                <div 
+                <div
                   key={key}
                   className="text-center transform hover:scale-110 transition-all duration-300 bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 animate-stats-in"
                   style={{ animationDelay: `${index * 200}ms` }}
@@ -767,7 +770,7 @@ const Home = () => {
         <div className="absolute top-1/3 right-1/4 w-28 h-28 bg-purple-400/30 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
         <div className="absolute bottom-1/4 left-1/3 w-24 h-24 bg-blue-400/30 rounded-full blur-xl animate-float-slow" style={{ animationDelay: '1s' }}></div>
         <div className="absolute top-1/2 right-1/3 w-16 h-16 bg-green-400/30 rounded-full blur-xl animate-float" style={{ animationDelay: '3s' }}></div>
-        
+
         {/* Animated Code Elements */}
         <div className="absolute top-20 left-20 text-white/10 z-10 animate-pulse-slow">
           <Code className="h-20 w-20" />
@@ -778,7 +781,8 @@ const Home = () => {
       </section>
 
       {/* Enhanced Consultation Section with Live Session */}
-      <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-violet-900 relative overflow-hidden">
+      {/* yha se me code change kr rhi hu  */}
+      <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-violet-900 relative overflow-hidden"   >
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.2)_1px,transparent_0)] bg-[length:30px_30px] animate-moving-background-slow"></div>
@@ -809,24 +813,24 @@ const Home = () => {
               <div
                 key={index}
                 className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20 hover:border-cyan-400/50 transition-all duration-500 hover:transform hover:scale-105 group relative overflow-hidden animate-consultation-card"
-                style={{animationDelay: `${index * 200}ms`}}
+                style={{ animationDelay: `${index * 200}ms` }}
               >
                 {/* Shine effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                
+
                 <div className={`w-20 h-20 bg-gradient-to-r ${option.color} rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-2xl group-hover:rotate-12`}>
                   <option.icon className="h-10 w-10 text-white" />
                 </div>
-                
+
                 <h3 className="text-2xl font-bold text-white mb-3">{option.title}</h3>
                 <p className="text-gray-300 mb-4 leading-relaxed">{option.description}</p>
-                
+
                 <div className="flex items-center text-cyan-300 mb-6">
                   <Clock className="h-5 w-5 mr-2" />
                   <span className="text-sm font-medium">{option.duration}</span>
                 </div>
-                
-                <Button 
+
+                <Button
                   onClick={option.onClick}
                   className={`w-full bg-gradient-to-r ${option.color} text-white hover:opacity-90 rounded-2xl py-6 text-lg font-semibold transition-all duration-300 group-hover:shadow-2xl group-hover:shadow-cyan-500/25 group-hover:scale-105`}
                 >
@@ -844,8 +848,8 @@ const Home = () => {
                 <h3 className="text-2xl font-bold text-white">Recent Sessions</h3>
                 <p className="text-gray-300">Your previous consultations and meetings</p>
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/10"
                 onClick={() => setIsScheduleModalOpen(true)}
               >
@@ -853,8 +857,8 @@ const Home = () => {
                 View All Sessions
               </Button>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sessionHistory.slice(0, 3).map((session) => (
                 <div key={session.id} className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-cyan-400/30 transition-all duration-300">
                   <div className="flex items-start justify-between mb-4">
@@ -894,10 +898,81 @@ const Home = () => {
                   </div>
                 </div>
               ))}
+            </div> */}
+
+
+
+
+
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sessionHistory.slice(0, 3).map((session) => (
+                <div
+                  key={session.id}
+                  className="flex items-center gap-4 bg-gradient-to-br from-orange-100 to-orange-200 
+                  border border-orange-300 rounded-3xl p-5 shadow-md hover:shadow-orange-400/40 
+                  hover:scale-[1.03] transition-all duration-300"
+                    >
+                {/* Profile Image */}
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-orange-500">
+                    <img
+                      src={session.photo || '/default-user.png'}
+                      alt={session.expert}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Right Content */}
+                  <div className="flex-1">
+                    {/* Name */}
+                    <h4 className="text-gray-900 text-lg font-semibold">
+                      {session.expert}
+                    </h4>
+
+                    {/* Skills / Role */}
+                    <p className="text-sm text-gray-700">{session.role}</p>
+
+                    {/* Rating + Orders */}
+                    <div className="flex items-center gap-4 mt-1">
+                      <span className="text-yellow-600 text-sm">⭐ {session.rating}</span>
+                      <span className="text-gray-700 text-xs">{session.orders} orders</span>
+                    </div>
+
+                    {/* Experience */}
+                    <p className="text-sm text-gray-800 mt-1">
+                      Exp: {session.experience} Years
+                    </p>
+
+                    {/* Topic */}
+                    <p className="text-sm text-gray-600 mt-1">{session.topic}</p>
+
+                    {/* Date + Duration + Chat Button */}
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center text-gray-600 text-sm">
+                        <Calendar className="h-4 w-4 mr-1" /> {session.date}
+                      </div>
+
+                      <div className="flex items-center text-blue-700 text-sm">
+                        <Clock className="h-4 w-4 mr-1" /> {session.duration}
+                      </div>
+
+                      {/* Chat Button */}
+                      <button className="bg-orange-500 text-white px-4 py-1 rounded-full text-sm shadow-sm hover:bg-orange-600">
+                        Chat
+                      </button>
+
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
+
+
           </div>
         </div>
       </section>
+
+      {/* yha tk */}
 
       {/* Live Session Modal */}
       {isLiveSessionOpen && (
@@ -906,11 +981,10 @@ const Home = () => {
             {/* Session Header */}
             <div className="flex items-center justify-between p-6 bg-gradient-to-r from-gray-900/90 to-black/90 border-b border-white/10">
               <div className="flex items-center space-x-4">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                  sessionType === 'video' ? 'bg-blue-500/20' : 'bg-purple-500/20'
-                }`}>
-                  {sessionType === 'video' ? 
-                    <VideoIcon className="h-6 w-6 text-blue-400" /> : 
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${sessionType === 'video' ? 'bg-blue-500/20' : 'bg-purple-500/20'
+                  }`}>
+                  {sessionType === 'video' ?
+                    <VideoIcon className="h-6 w-6 text-blue-400" /> :
                     <Phone className="h-6 w-6 text-purple-400" />
                   }
                 </div>
@@ -921,9 +995,9 @@ const Home = () => {
                   <div className="flex items-center space-x-4 text-sm">
                     <div className={`flex items-center ${sessionStatus === 'connected' ? 'text-green-400' : 'text-yellow-400'}`}>
                       <div className={`w-2 h-2 rounded-full mr-2 ${sessionStatus === 'connected' ? 'bg-green-400 animate-pulse' : 'bg-yellow-400 animate-pulse'}`}></div>
-                      {sessionStatus === 'connecting' ? 'Connecting...' : 
-                       sessionStatus === 'connected' ? 'Connected' : 
-                       'Session Ended'}
+                      {sessionStatus === 'connecting' ? 'Connecting...' :
+                        sessionStatus === 'connected' ? 'Connected' :
+                          'Session Ended'}
                     </div>
                     <div className="text-gray-400">
                       <Clock className="h-4 w-4 inline mr-1" />
@@ -932,11 +1006,11 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-4">
                 {sessionStatus === 'connected' && (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     className={`border ${recording ? 'border-red-500 text-red-400' : 'border-gray-600 text-gray-400'}`}
                     onClick={() => setRecording(!recording)}
@@ -945,18 +1019,18 @@ const Home = () => {
                     {recording ? 'Recording' : 'Record'}
                   </Button>
                 )}
-                
-                <Button 
-                  variant="ghost" 
+
+                <Button
+                  variant="ghost"
                   size="sm"
                   className="text-gray-400 hover:text-white"
                   onClick={() => setIsLiveSessionOpen(false)}
                 >
                   <Maximize2 className="h-5 w-5" />
                 </Button>
-                
-                <Button 
-                  variant="destructive" 
+
+                <Button
+                  variant="destructive"
                   onClick={endSession}
                   className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
                 >
@@ -972,8 +1046,8 @@ const Home = () => {
                 {sessionStatus === 'connecting' ? (
                   <div className="flex-1 flex flex-col items-center justify-center">
                     <div className="w-32 h-32 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full flex items-center justify-center mb-8 animate-pulse">
-                      {sessionType === 'video' ? 
-                        <VideoIcon className="h-16 w-16 text-blue-400" /> : 
+                      {sessionType === 'video' ?
+                        <VideoIcon className="h-16 w-16 text-blue-400" /> :
                         <Phone className="h-16 w-16 text-purple-400" />
                       }
                     </div>
@@ -981,7 +1055,7 @@ const Home = () => {
                     <p className="text-gray-400">Please wait while we connect you with our specialist</p>
                     <div className="mt-8 flex space-x-2">
                       {[1, 2, 3].map((i) => (
-                        <div key={i} className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: `${i * 0.2}s`}}></div>
+                        <div key={i} className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }}></div>
                       ))}
                     </div>
                   </div>
@@ -1018,7 +1092,7 @@ const Home = () => {
                             </div>
                           )}
                         </div>
-                        
+
                         {/* Your Name Badge */}
                         <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-full">
                           <p className="text-white text-sm font-medium">You {isMuted && '(Muted)'}</p>
@@ -1040,7 +1114,7 @@ const Home = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         {/* Expert Name Badge */}
                         <div className="absolute bottom-4 left-4 bg-gradient-to-r from-cyan-600 to-blue-600 backdrop-blur-sm px-4 py-2 rounded-full">
                           <p className="text-white text-sm font-medium">John Doe - IT Expert</p>
@@ -1058,7 +1132,7 @@ const Home = () => {
                       >
                         {isMuted ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
                       </Button>
-                      
+
                       {sessionType === 'video' && (
                         <Button
                           variant="outline"
@@ -1069,7 +1143,7 @@ const Home = () => {
                           {isVideoOff ? <VideoOff className="h-6 w-6" /> : <VideoIcon className="h-6 w-6" />}
                         </Button>
                       )}
-                      
+
                       <Button
                         variant="outline"
                         size="lg"
@@ -1078,7 +1152,7 @@ const Home = () => {
                       >
                         {isScreenSharing ? <ScreenShareOff className="h-6 w-6" /> : <ScreenShare className="h-6 w-6" />}
                       </Button>
-                      
+
                       <Button
                         variant="outline"
                         size="lg"
@@ -1086,7 +1160,7 @@ const Home = () => {
                       >
                         <Settings className="h-6 w-6" />
                       </Button>
-                      
+
                       <Button
                         variant="destructive"
                         size="lg"
@@ -1121,7 +1195,7 @@ const Home = () => {
                           <span>Session was recorded</span>
                         </div>
                       )}
-                      <Button 
+                      <Button
                         className="w-full bg-gradient-to-r from-cyan-600 to-blue-600"
                         onClick={() => setIsLiveSessionOpen(false)}
                       >
@@ -1142,12 +1216,10 @@ const Home = () => {
                       {participants.map((participant) => (
                         <div key={participant.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                           <div className="flex items-center space-x-3">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                              participant.id === 1 ? 'bg-blue-500/20' : 'bg-green-500/20'
-                            }`}>
-                              <User className={`h-5 w-5 ${
-                                participant.id === 1 ? 'text-blue-400' : 'text-green-400'
-                              }`} />
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${participant.id === 1 ? 'bg-blue-500/20' : 'bg-green-500/20'
+                              }`}>
+                              <User className={`h-5 w-5 ${participant.id === 1 ? 'text-blue-400' : 'text-green-400'
+                                }`} />
                             </div>
                             <div>
                               <p className="text-white font-medium">{participant.name}</p>
@@ -1157,10 +1229,10 @@ const Home = () => {
                           {participant.isSpeaking && (
                             <div className="flex space-x-1">
                               {[1, 2, 3].map((i) => (
-                                <div 
+                                <div
                                   key={i}
                                   className="w-1 h-4 bg-green-400 rounded-full animate-pulse"
-                                  style={{animationDelay: `${i * 0.1}s`}}
+                                  style={{ animationDelay: `${i * 0.1}s` }}
                                 ></div>
                               ))}
                             </div>
@@ -1268,27 +1340,23 @@ const Home = () => {
                         ].map((item) => (
                           <button
                             key={item.type}
-                            className={`p-4 rounded-xl border-2 transition-all ${
-                              sessionType === item.type 
-                                ? `border-${item.color}-500 bg-${item.color}-500/10` 
+                            className={`p-4 rounded-xl border-2 transition-all ${sessionType === item.type
+                                ? `border-${item.color}-500 bg-${item.color}-500/10`
                                 : 'border-white/10 bg-white/5 hover:border-white/20'
-                            }`}
+                              }`}
                             onClick={() => setSessionType(item.type)}
                           >
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${
-                              sessionType === item.type 
-                                ? `bg-${item.color}-500/20` 
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-3 ${sessionType === item.type
+                                ? `bg-${item.color}-500/20`
                                 : 'bg-white/10'
-                            }`}>
-                              <item.icon className={`h-6 w-6 ${
-                                sessionType === item.type 
-                                  ? `text-${item.color}-400` 
+                              }`}>
+                              <item.icon className={`h-6 w-6 ${sessionType === item.type
+                                  ? `text-${item.color}-400`
                                   : 'text-gray-400'
-                              }`} />
+                                }`} />
                             </div>
-                            <p className={`font-medium ${
-                              sessionType === item.type ? 'text-white' : 'text-gray-400'
-                            }`}>
+                            <p className={`font-medium ${sessionType === item.type ? 'text-white' : 'text-gray-400'
+                              }`}>
                               {item.label}
                             </p>
                           </button>
@@ -1315,8 +1383,8 @@ const Home = () => {
                     <h3 className="text-lg font-semibold text-white mb-4">Available Experts</h3>
                     <div className="space-y-4">
                       {experts.map((expert) => (
-                        <div 
-                          key={expert.id} 
+                        <div
+                          key={expert.id}
                           className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
                         >
                           <div className="flex items-center space-x-3">
@@ -1328,11 +1396,10 @@ const Home = () => {
                               <p className="text-sm text-gray-400">{expert.role}</p>
                             </div>
                           </div>
-                          <div className={`px-3 py-1 rounded-full text-xs ${
-                            expert.available 
-                              ? 'bg-green-500/20 text-green-400' 
+                          <div className={`px-3 py-1 rounded-full text-xs ${expert.available
+                              ? 'bg-green-500/20 text-green-400'
                               : 'bg-red-500/20 text-red-400'
-                          }`}>
+                            }`}>
                             {expert.available ? 'Available' : 'Busy'}
                           </div>
                         </div>
@@ -1385,7 +1452,7 @@ const Home = () => {
                   className="border-white/20 text-white hover:bg-white/10"
                   onClick={() => setIsScheduleModalOpen(false)}
                 >
-                  Cancel
+                  Cance
                 </Button>
                 <Button
                   className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 px-8"
@@ -1419,7 +1486,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setIsLiveChatOpen(false)}
                 className="text-white/80 hover:text-white transition-colors"
               >
@@ -1436,11 +1503,10 @@ const Home = () => {
                     className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
-                        message.sender === 'user'
+                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${message.sender === 'user'
                           ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-br-none'
                           : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none shadow-sm'
-                      }`}
+                        }`}
                     >
                       <p className="text-sm">{message.text}</p>
                       <p className="text-xs opacity-70 mt-1 text-right">
@@ -1502,7 +1568,7 @@ const Home = () => {
             Live Chat
           </Button>
         )}
-        
+
         <Button
           onClick={() => startLiveSession("video")}
           className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full p-4 shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300"
@@ -1521,7 +1587,7 @@ const Home = () => {
       {/* Services Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjEiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjEwIiByPSIxIi8+PGNpcmNsZSBjeD0iMTAiIGN5PSI1MCIgcj0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjEiLz48L2c+PC9nPjwvc3ZnPg==')]"></div>
-        
+
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-gray-900">
@@ -1545,8 +1611,8 @@ const Home = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shine"></div>
               <h3 className="text-2xl font-bold mb-4">Ready to Transform Your Business?</h3>
               <p className="mb-6 opacity-90">Get a comprehensive digital strategy tailored to your goals</p>
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="rounded-full bg-white text-cyan-600 hover:bg-gray-100 shadow-lg hover:scale-105 transition-transform"
                 onClick={() => setIsScheduleModalOpen(true)}
               >
