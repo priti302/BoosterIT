@@ -1,236 +1,8 @@
-// import { useNavigate } from "react-router-dom";
-// import { Star } from "lucide-react";
 
-// const experts = [
-//   {
-//     id: 1,
-//     name: "Aarav Sharma",
-//     skills: "Social Media Marketing",
-//     languages: "Hindi",
-//     experience: "11 Years",
-//     orders: 26353,
-//     price: 5,
-//     oldPrice: 29,
-//     status: "Offline",
-//     wait: "Currently offline",
-//     image: "/experts/aarav.jpg",
-//   },
-//   {
-//     id: 2,
-//     name: "Bhumija",
-//     skills: "Content Strategy",
-//     languages: "Hindi • Punjabi",
-//     experience: "6 Years",
-//     orders: 29110,
-//     price: 5,
-//     oldPrice: 26,
-//     status: "Online",
-//     image: "/experts/priya.jpg",
-//   },
-//   {
-//     id: 3,
-//     name: "Avishkar",
-//     skills: "Brand Strategy & Positioning",
-//     languages: "Hindi",
-//     experience: "5 Years",
-//     orders: 9544,
-//     price: 5,
-//     oldPrice: 20,
-//     status: "Online",
-//     image: "/experts/rahul.jpg",
-//   },
-//   {
-//     id: 4,
-//     name: "Dwarkanath",
-//     skills: "Analytics & Performance Tracking (Google Analytics)",
-//     languages: "English • Hindi • Tamil",
-//     experience: "20 Years",
-//     orders: 8073,
-//     price: 5,
-//     oldPrice: 28,
-//     status: "Online",
-//     image: "/experts/e1.jpg",
-//   },
-//   {
-//     id: 5,
-//     name: "Vrivina",
-//     skills: "Email Marketing & Automation",
-//     languages: "Hindi",
-//     experience: "3 Years",
-//     orders: 10112,
-//     price: 5,
-//     oldPrice: 27,
-//     status: "Online",
-//     image: "/experts/e2.jpg",
-//   },
-//   {
-//     id: 6,
-//     name: "Sarvagnay",
-//     skills: "Full-Stack Web Development",
-//     languages: "Hindi",
-//     experience: "7 Years",
-//     orders: 12489,
-//     price: 25,
-//     oldPrice: 32,
-//     status: "Online",
-//     image: "/experts/e3.jpg",
-//   },
-//   {
-//     id: 7,
-//     name: "Rasheshwari",
-//     skills: "Cloud Computing (AWS / Azure / GCP)",
-//     languages: "Hindi • English",
-//     experience: "6 Years",
-//     orders: 11844,
-//     price: 36,
-//     oldPrice: 40,
-//     status: "Busy",
-//     wait: "Wait ~ 4m",
-//     image: "/experts/e4.jpg",
-//   },
-//   {
-//     id: 8,
-//     name: "Akshath",
-//     skills: "AI / Machine Learning",
-//     languages: "Hindi • English",
-//     experience: "4 Years",
-//     orders: 9625,
-//     price: 30,
-//     oldPrice: 35,
-//     status: "Busy",
-//     wait: "Wait ~ 7m",
-//     image: "/experts/e5.jpg",
-//   },
-//   {
-//     id: 9,
-//     name: "Vishakha",
-//     skills: "UI/UX Design & Prototyping",
-//     languages: "Hindi • English",
-//     experience: "6 Years",
-//     orders: 37684,
-//     price: 43,
-//     oldPrice: 50,
-//     status: "Busy",
-//     wait: "Wait ~ 9m",
-//     image: "/experts/e6.jpg",
-//   },
-//   {
-//     id: 10,
-//     name: "Manju Devi",
-//     skills: "Cybersecurity & Ethical Hacking",
-//     languages: "Hindi",
-//     experience: "9 Years",
-//     orders: 18700,
-//     price: 20,
-//     oldPrice: 30,
-//     status: "Online",
-//     image: "/experts/e7.jpg",
-//   },
-//   {
-//     id: 11,
-//     name: "Samar Singh",
-//     skills: "Influencer & Affiliate Marketing",
-//     languages: "Hindi • English",
-//     experience: "12 Years",
-//     orders: 22300,
-//     price: 22,
-//     oldPrice: 33,
-//     status: "Offline",
-//     wait: "Offline",
-//     image: "/experts/e8.jpg",
-//   },
-//   {
-//     id: 12,
-//     name: "Tanya Sharma",
-//     skills: "Cybersecurity & Ethical Hacking",
-//     languages: "Hindi • English",
-//     experience: "4 Years",
-//     orders: 9900,
-//     price: 17,
-//     oldPrice: 25,
-//     status: "Online",
-//     image: "/experts/e9.jpg",
-//   }
-// ];
-
-
-// export default function ExpertsList() {
-//   const navigate = useNavigate();
-
-//   return (
-//     <div className="bg-[#f5f2ff] min-h-screen p-6">
-      
-//       <h1 className="text-3xl font-bold text-center mb-6 text-purple-800">
-//         Expert List
-//       </h1>
-
-//       {/* GRID - 3 PER ROW */}
-//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-//         {experts.map((e) => (
-//           <div
-//             key={e.id}
-//             className="bg-white p-4 rounded-2xl shadow-md border border-purple-900 hover:shadow-lg transition"
-//           >
-//             {/* TOP ROW */}
-//             <div className="flex items-center gap-4">
-
-//               {/* IMAGE */}
-//               <img
-//                 src={e.image}
-//                 className="w-20 h-20 rounded-full object-cover border border-gray-300"
-//               />
-
-//               {/* DETAILS */}
-//               <div className="flex-1">
-//                 <h2 className="text-lg font-semibold">{e.name}</h2>
-//                 <p className="text-sm text-gray-600 truncate">{e.skills}</p>
-//                 <p className="text-sm text-gray-500">{e.languages}</p>
-
-//                 <div className="flex items-center text-gray-700 gap-1 mt-1">
-//                   <Star size={16} fill="gold" className="text-yellow-500" />
-//                   4.9
-//                 </div>
-
-//                 <p className="text-sm font-medium text-gray-700">
-//                   Exp: {e.experience}
-//                 </p>
-
-//                 <p className="text-xs text-gray-600">{e.orders} orders</p>
-//               </div>
-//             </div>
-
-//             {/* FOOTER */}
-//             <div className="flex justify-between items-center mt-4">
-
-//               {/* PRICE LEFT */}
-//               <div>
-//                 <p className="text-red-600 font-bold text-sm">₹ {e.price}/min</p>
-//                 <p className="text-xs line-through text-gray-500">
-//                   ₹ {e.oldPrice}/min
-//                 </p>
-//               </div>
-
-//               {/* CHAT BUTTON RIGHT */}
-//               <button
-//                 onClick={() => navigate(`/expert/${e.id}`)}
-//                 className="px-5 py-1.5 rounded-full bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 shadow"
-//               >
-//                 Chat
-//               </button>
-//             </div>
-
-//           </div>
-//         ))}
-
-//       </div>
-//     </div>
-//   );
-// }
 
 import { useNavigate } from "react-router-dom";
 import { Star } from "lucide-react";
-
+import TopNav from "../components/TopNav";
 // -------------------------
 // EXPERTS DATA
 // -------------------------
@@ -391,14 +163,53 @@ const experts = [
 // -------------------------
 export default function ExpertsList() {
   const navigate = useNavigate();
+  // for wallet
+    const walletBalance = 12;
 
   return (
     <div className="min-h-screen p-8 bg-gradient-to-br from-purple-100 via-white to-purple-50">
+      
+      
+       <TopNav title=" Our Top Experts" />
+      {/* ---------------- WALLET HEADER ---------------- */}
+      <div className="bg-white border border-blue-200 shadow-md rounded-3xl p-6 mb-10">
+        
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Your Wallet</h2>
 
+        <div className="flex justify-between items-center">
 
+          {/* Wallet Balance */}
+          <div>
+            <p className="text-lg font-semibold text-green-600">
+              Balance: ₹{walletBalance}
+            </p>
+
+            {/* If wallet is low */}
+            {walletBalance < 20 && (
+              <p className="text-red-500 text-sm mt-1">
+                Wallet balance is insufficient!
+              </p>
+            )}
+          </div>
+
+          {/* Recharge Button */}
+          <button
+            onClick={() => navigate("/recharge")}
+            className="px-6 py-2 bg-blue-400 text-white font-bold rounded-full 
+            shadow hover:shadow-lg hover:scale-105 transition-all"
+          >
+            Recharge Wallet 💳
+          </button>
+        </div>
+      </div>
+
+      {/* ---------------- PAGE TITLE ---------------- */}
       <h1 className="text-4xl font-extrabold text-center mb-10 text-purple-700 tracking-wide drop-shadow-md">
         🌟 Our Top Experts
       </h1>
+      {/* <h1 className="text-4xl font-extrabold text-center mb-10 text-purple-700 tracking-wide drop-shadow-md">
+        🌟 Our Top Experts
+      </h1> */}
 
       {/* GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
