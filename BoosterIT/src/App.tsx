@@ -17,6 +17,12 @@ import ResetPassword from "./pages/ResetPassword";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import ConsultationPage from './pages/ConsultationPage';
+// Your new pages
+import ExpertsList from "./pages/ExpertList";
+import ExpertDetail from "./pages/ExpertsDetails";
+import SessionsPage from "./pages/Sessionspage";
+import ChatPage from "./pages/ChatPage";
+import CallPage from "./pages/CallPage";
 import ExpertGoLive from "./pages/ExpertGoLive";
 
 const queryClient = new QueryClient();
@@ -29,6 +35,9 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/experts" element={<ExpertsList />} />
+            <Route path="/expert/:id" element={<ExpertDetail />} />
+            <Route path="/sessions" element={<SessionsPage />} />
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/it-services" element={<ITServices />} />
@@ -43,8 +52,9 @@ const App = () => (
             <Route path="/consultation/:type" element={<ConsultationPage />} />
             <Route path="/consultation" element={<ConsultationPage />} />
             <Route path="/expert/live" element={<ExpertGoLive />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
+            <Route path="/chat/:id" element={<ChatPage />} />
+            <Route path="/call/:id" element={<CallPage />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

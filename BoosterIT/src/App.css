@@ -40,3 +40,10 @@
 .read-the-docs {
   color: #888;
 }
+
+/* css for parallex  */
+.parallax-bg {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
