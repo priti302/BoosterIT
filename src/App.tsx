@@ -20,7 +20,10 @@ import ExpertDetail from "./pages/ExpertsDetails";
 import SessionsPage from "./pages/Sessionspage";
 import ChatPage from "./pages/ChatPage";
 import CallPage from "./pages/CallPage";
-
+import RechargePage from "./pages/RechargePage";
+import PaymentPage from "./pages/PaymentPage";
+import DashboardPage from "./pages/DashBoard";
+import AdminPanel from "./pages/Admin";
 
 
 
@@ -60,8 +63,16 @@ const App = () => (
              <Route path="/chat/:id" element={<ChatPage />} />
 
              {/*route for calling */}
-              <Route path="/call/:id" element={<CallPage />} />
+              <Route path="/call/:id" element={<CallPage />} />             
+               <Route path="/" element={<ExpertsList />} />
+              <Route path="/recharge" element={<RechargePage />} />
+              <Route path="/payment" element={<PaymentPage />} />
+              {/* <Route path="/TopNov"  element={<TopNav/>}/> */}
+                  <Route path="/dashboard" element={<DashboardPage/>}/>
+              <Route path="/Admin" element={<AdminPanel/>}/>
         </Routes>
+
+      
       </BrowserRouter>
 
     </TooltipProvider>
