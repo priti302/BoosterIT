@@ -780,8 +780,184 @@ const Home = () => {
         </div>
       </section>
 
+  <style jsx>{`
+    @keyframes slide {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-slide-infinite {
+      display: flex;
+      animation: slide 20s linear infinite;
+    }
+    .pause-animation {
+      animation-play-state: paused !important;
+    }
+    .group:hover .animate-slide-infinite {
+      animation-play-state: paused;
+    }
+     
+      /* 🎥 Parallax Depth Movement (slow) */
+      @keyframes parallaxDeep {
+     0% { transform: scale(1.1) translateY(0px); }
+     100% { transform: scale(1.1) translateY(-40px); }
+    }
+    .  animate-parallax-deep {
+    animation: parallaxDeep 16s linear infinite alternate;
+    }
+
+   /* ✨ Soft Parallax Layer */
+   @keyframes parallaxSoft {
+    0% { transform: translateY(10px); }
+   100% { transform: translateY(-10px); }
+   }
+  .animate-parallax-soft {
+   animation: parallaxSoft 10s ease-in-out infinite alternate;
+  }
+
+  / * 🌠 Light Trail Streaks */
+  @keyframes lightTrails {
+  0% { opacity: 0; transform: translateY(-50px) scaleY(0.5); }
+  30% { opacity: 1; transform: translateY(20px) scaleY(1); }
+  100% { opacity: 0; transform: translateY(100px) scaleY(0.2); }
+  }
+  .animate-light-trails {
+  animation: lightTrails 3s linear infinite;
+  }
+
+  /* 👍 Floating Effects */
+   @keyframes float {
+   0% { transform: translateY(0); }
+   100% { transform: translateY(-20px); }
+   }
+    .animate-float {
+    animation: float 4s ease-in-out infinite alternate;
+   }
+    .animate-float-slow {
+    animation: float 7s ease-in-out infinite alternate;
+  }
+
+   /* Fade In */
+   @keyframes fadeInUp {
+   from { opacity: 0; transform: translateY(30px); }
+   to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in-up {
+  animation: fadeInUp 1s ease-out;
+  }
+   .animate-fade-in-up-delay {
+   animation: fadeInUp 1.4s ease-out;
+  }
+  /* Horizontal Infinite Slide */
+  @keyframes horizontalSlide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+  }
+  .animate-horizontal-slide {
+  animation: horizontalSlide 18s linear infinite;
+  }
+
+ /* Parallax BG Slow Movement */
+  @keyframes parallaxDeep {
+  0% { transform: scale(1.1) translateY(0px); }
+  100% { transform: scale(1.1) translateY(-40px); }
+  }
+  .animate-parallax-deep {
+  animation: parallaxDeep 16s linear infinite alternate;
+ }
+
+  /* Soft Overlay Parallax */
+  @keyframes parallaxSoft {
+   0% { transform: translateY(10px); }
+  100% { transform: translateY(-10px); }
+  }
+ .animate-parallax-soft {
+  animation: parallaxSoft 10s ease-in-out infinite alternate;
+ }
+
+  /* Light falling trails */
+  @keyframes lightTrails {
+  0% { opacity: 0; transform: translateY(-50px) scaleY(0.5); }
+  30% { opacity: 1; transform: translateY(20px) scaleY(1); }
+  100% { opacity: 0; transform: translateY(100px) scaleY(0.2); }
+  }
+  .animate-light-trails {
+  animation: lightTrails 3s linear infinite;
+  }
+
+ /* Floating logos */
+  @ keyframes float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-15px); }
+  }
+  .animate-float {
+  animation: float 4s ease-in-out infinite alternate;
+  }
+  .animate-float-slow {
+  animation: float 6s ease-in-out infinite alternate;
+}
+
+
+  `}</style>
+
+
+{/* 🪔 Modern Festival Deals – Amazon/Flipkart Style */}
+<section className="py-20 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 relative overflow-hidden">
+
+  {/* Soft Glow Lights */}
+  <div className="absolute inset-0 bg-[url('https://i.imgur.com/7nQ7vYT.png')] opacity-20 mix-blend-overlay animate-pulse"></div>
+
+  {/* Floating Diyas */}
+  <div className="absolute top-10 left-10 w-24 h-24 bg-yellow-300/30 blur-2xl rounded-full animate-float"></div>
+  <div className="absolute bottom-10 right-20 w-32 h-32 bg-orange-400/30 blur-3xl rounded-full animate-float-slow"></div>
+
+  <div className="relative z-10 text-center">
+    <h2 className="text-5xl font-extrabold text-white drop-shadow-xl">
+      🛍️ Mega Festival Sale
+    </h2>
+    <p className="text-white/90 mt-3 text-xl">
+      Grab exclusive festive discounts – Limited Time Only!
+    </p>
+
+    {/* Offer Cards Like Flipkart */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto mt-14 px-6">
+      
+      {/* Card 1 */}
+      <div className="bg-white rounded-3xl p-8 shadow-xl hover:scale-105 transition-all border-4 border-white/50">
+        <h3 className="text-3xl font-bold text-red-600">🔥 Flat 60% OFF</h3>
+        <p className="text-gray-600 mt-3">Website + App Combo</p>
+        <button className="mt-6 bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition">
+          Grab Now
+        </button>
+      </div>
+
+      {/* Card 2 */}
+      <div className="bg-white rounded-3xl p-8 shadow-xl hover:scale-105 transition-all border-4 border-white/50">
+        <h3 className="text-3xl font-bold text-purple-600">🎁 Super Combo</h3>
+        <p className="text-gray-600 mt-3">SEO + Hosting + Branding</p>
+        <button className="mt-6 bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition">
+          Explore Deals
+        </button>
+      </div>
+
+      {/* Card 3 */}
+      <div className="bg-white rounded-3xl p-8 shadow-xl hover:scale-105 transition-all border-4 border-white/50">
+        <h3 className="text-3xl font-bold text-green-600">✨ FREE Consultation</h3>
+        <p className="text-gray-600 mt-3">Marketing + Strategy Session</p>
+        <button className="mt-6 bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition">
+          Book Now
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+     
+
+     
+
+
       {/* Enhanced Consultation Section with Live Session */}
-      {/* yha se me code change kr rhi hu  */}
+
       <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-violet-900 relative overflow-hidden"   >
         {/* Animated Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -842,8 +1018,8 @@ const Home = () => {
           </div>
 
           {/* Session History Preview */}
-          <div className="mt-16 bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
-            <div className="flex items-center justify-between mb-6">
+          {/* <div className="mt-16 bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10"> */}
+            {/* <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-2xl font-bold text-white">Recent Sessions</h3>
                 <p className="text-gray-300">Your previous consultations and meetings</p>
@@ -856,123 +1032,81 @@ const Home = () => {
                 <CalendarDays className="h-4 w-4 mr-2" />
                 View All Sessions
               </Button>
-            </div>
-
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sessionHistory.slice(0, 3).map((session) => (
-                <div key={session.id} className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-cyan-400/30 transition-all duration-300">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        session.type === 'video' ? 'bg-blue-500/20' : 
-                        session.type === 'audio' ? 'bg-purple-500/20' : 
-                        'bg-green-500/20'
-                      }`}>
-                        {session.type === 'video' ? <VideoIcon className="h-5 w-5 text-blue-400" /> : 
-                         session.type === 'audio' ? <Phone className="h-5 w-5 text-purple-400" /> : 
-                         <CalendarDays className="h-5 w-5 text-green-400" />}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white">{session.expert}</h4>
-                        <p className="text-sm text-gray-400">{session.role || session.type} Session</p>
-                      </div>
-                    </div>
-                    {session.recording && (
-                      <div className="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded-full">
-                        Recorded
-                      </div>
-                    )}
-                  </div>
-                  
-                  <p className="text-gray-300 text-sm mb-4">{session.topic}</p>
-                  
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center text-gray-400">
-                      <Calendar className="h-4 w-4 mr-1" />
-                      {session.date}
-                    </div>
-                    <div className="flex items-center text-cyan-400">
-                      <Clock className="h-4 w-4 mr-1" />
-                      {session.duration}
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div> */}
 
-
-
-
-
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sessionHistory.slice(0, 3).map((session) => (
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {
+              sessionHistory.slice(0, 3).map((session) => (
                 <div
                   key={session.id}
                   className="flex items-center gap-4 bg-gradient-to-br from-orange-100 to-orange-200 
                   border border-orange-300 rounded-3xl p-5 shadow-md hover:shadow-orange-400/40 
                   hover:scale-[1.03] transition-all duration-300"
-                    >
+                    > */}
                 {/* Profile Image */}
-                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-orange-500">
+                  {/* <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-orange-500">
                     <img
                       src={session.photo || '/default-user.png'}
                       alt={session.expert}
                       className="w-full h-full object-cover"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Right Content */}
-                  <div className="flex-1">
+                  {/* <div className="flex-1"> */}
                     {/* Name */}
-                    <h4 className="text-gray-900 text-lg font-semibold">
+                    {/* <h4 className="text-gray-900 text-lg font-semibold">
                       {session.expert}
-                    </h4>
+                    </h4> */}
 
                     {/* Skills / Role */}
-                    <p className="text-sm text-gray-700">{session.role}</p>
+                    {/* <p className="text-sm text-gray-700">{session.role}</p> */}
 
                     {/* Rating + Orders */}
-                    <div className="flex items-center gap-4 mt-1">
+                    {/* <div className="flex items-center gap-4 mt-1">
                       <span className="text-yellow-600 text-sm">⭐ {session.rating}</span>
                       <span className="text-gray-700 text-xs">{session.orders} orders</span>
-                    </div>
+                    </div> */}
 
                     {/* Experience */}
-                    <p className="text-sm text-gray-800 mt-1">
+                    {/* <p className="text-sm text-gray-800 mt-1">
                       Exp: {session.experience} Years
-                    </p>
+                    </p> */}
 
                     {/* Topic */}
-                    <p className="text-sm text-gray-600 mt-1">{session.topic}</p>
+                    {/* <p className="text-sm text-gray-600 mt-1">{session.topic}</p> */}
 
                     {/* Date + Duration + Chat Button */}
-                    <div className="flex items-center justify-between mt-3">
+                    {/* <div className="flex items-center justify-between mt-3">
                       <div className="flex items-center text-gray-600 text-sm">
                         <Calendar className="h-4 w-4 mr-1" /> {session.date}
                       </div>
 
                       <div className="flex items-center text-blue-700 text-sm">
                         <Clock className="h-4 w-4 mr-1" /> {session.duration}
-                      </div>
+                      </div> */}
 
                       {/* Chat Button */}
-                      <button className="bg-orange-500 text-white px-4 py-1 rounded-full text-sm shadow-sm hover:bg-orange-600">
+                      {/* <button className="bg-orange-500 text-white px-4 py-1 rounded-full text-sm shadow-sm hover:bg-orange-600">
                         Chat
-                      </button>
+                      </button> */}
 
-                    </div>
-                  </div>
-                </div>
+                    {/* </div>
+                   </div>
+                 </div>
               ))}
-            </div>
+            </div> */}
+
+{/* 
+          </div> */}
 
 
-          </div>
         </div>
       </section>
 
       {/* yha tk */}
+
+      
 
       {/* Live Session Modal */}
       {isLiveSessionOpen && (
@@ -1580,9 +1714,89 @@ const Home = () => {
       </div>
 
       {/* Enhanced Client Logos Section */}
-      <section className="py-20 relative overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900">
-        {/* ... (rest of the client logos section remains the same) ... */}
-      </section>
+      {/* second demo for parallax  */}
+      {/* 🌌 PARALLAX + HORIZONTAL SLIDING LOGOS SECTION */}
+    <section className="relative py-20 h-[380px] w-full overflow-hidden bg-black">
+
+  {/* PARALLAX BACKGROUND */}
+  <div
+    className="absolute inset-0 bg-cover bg-center opacity-40 animate-parallax-deep"
+    style={{
+      backgroundImage:
+        "https://images.unsplash.com/photo-1504384308090-a583b9f1eacb?auto=format&fit=crop&w=2000&q=80')",
+    }}
+  ></div>
+
+  {/* COLOR GRADIENT OVERLAY */}
+  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 via-purple-500/20 to-cyan-400/30 mix-blend-screen animate-parallax-soft"></div>
+
+  {/* LIGHT TRAIL PARTICLES */}
+  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    {[...Array(15)].map((_, i) => (
+      <span
+        key={i}
+        className="absolute w-[2px] h-[70px] bg-white/50 rounded-full animate-light-trails"
+        style={{
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+          animationDelay: `${Math.random() * 3}s`,
+        }}
+      ></span>
+    ))}
+  </div>
+   <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+      Trusted by Leading Brands
+      </h2>
+      <p className="text-center text-gray-500 mb-10">Our Partners & Technologies</p>
+     {/* ⭐ HORIZONTAL SLIDER (PARALLAX LAYER) */}
+    <div className="relative w-full overflow-hidden group">
+
+      <div className="flex items-center gap-16 animate-slide-infinite group-hover:pause-animation whitespace-nowrap">
+      
+      {[
+        "https://cdn.worldvectorlogo.com/logos/react-2.svg",
+        "https://cdn.worldvectorlogo.com/logos/nodejs-icon.svg",
+        "https://cdn.worldvectorlogo.com/logos/firebase-1.svg",
+        "https://cdn.worldvectorlogo.com/logos/mongodb-icon-1.svg",
+        "https://cdn.worldvectorlogo.com/logos/aws-2.svg",
+        "https://cdn.worldvectorlogo.com/logos/docker.svg",
+        // "https://cdn.worldvectorlogo.com/logos/google-2015.svg",
+        "https://cdn.worldvectorlogo.com/logos/microsoft-5.svg",
+        "https://cdn.worldvectorlogo.com/logos/netflix-3.svg",
+        // "https://cdn.worldvectorlogo.com/logos/shopify-1.svg",
+      ].map((logo, i) => (
+        <img
+          key={i}
+          src={logo}
+          className="h-16 w-16 object-contain opacity-80 hover:opacity-100 transition"
+        />
+      ))}
+
+      {/* Duplicate list for smooth infinite loop */}
+      {[
+        "https://cdn.worldvectorlogo.com/logos/react-2.svg",
+        "https://cdn.worldvectorlogo.com/logos/nodejs-icon.svg",
+        "https://cdn.worldvectorlogo.com/logos/firebase-1.svg",
+        "https://cdn.worldvectorlogo.com/logos/mongodb-icon-1.svg",
+        "https://cdn.worldvectorlogo.com/logos/aws-2.svg",
+        "https://cdn.worldvectorlogo.com/logos/docker.svg",
+        // "https://cdn.worldvectorlogo.com/logos/google-2015.svg",
+        "https://cdn.worldvectorlogo.com/logos/microsoft-5.svg",
+        "https://cdn.worldvectorlogo.com/logos/netflix-3.svg",
+        // "https://cdn.worldvectorlogo.com/logos/shopify-1.svg",
+      ].map((logo, i) => (
+        <img
+          key={`dup-${i}`}
+          src={logo}
+          className="h-16 w-16 object-contain opacity-80 hover:opacity-100 transition"
+        />
+      ))}
+    </div>
+  </div>
+
+</section>
+
+
 
       {/* Services Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
@@ -1953,6 +2167,18 @@ const Home = () => {
         .animate-float-slow {
           animation: float 6s ease-in-out infinite;
         }
+          @keyframes float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-20px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite alternate;
+}
+
+.animate-float-slow {
+  animation: float 7s ease-in-out infinite alternate;
+}
+
         .animate-pulse-slow {
           animation: pulse 4s ease-in-out infinite;
         }
